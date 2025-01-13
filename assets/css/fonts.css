@@ -1,0 +1,60 @@
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: local('Plus Jakarta Sans Regular'), local('PlusJakartaSans-Regular'),
+        url('~/assets/fonts/PlusJakartaSans-Regular.woff2') format('woff2'),
+        url('~/assets/fonts/PlusJakartaSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: local('Plus Jakarta Sans SemiBold'), local('PlusJakartaSans-SemiBold'),
+        url('~/assets/fonts/PlusJakartaSans-SemiBold.woff2') format('woff2'),
+        url('~/assets/fonts/PlusJakartaSans-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: local('Plus Jakarta Sans Bold'), local('PlusJakartaSans-Bold'),
+        url('~/assets/fonts/PlusJakartaSans-Bold.woff2') format('woff2'),
+        url('~/assets/fonts/PlusJakartaSans-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: local('Plus Jakarta Sans Medium'), local('PlusJakartaSans-Medium'),
+        url('~/assets/fonts/PlusJakartaSans-Medium.woff2') format('woff2'),
+        url('~/assets/fonts/PlusJakartaSans-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Space Grotesk';
+    src: local('Space Grotesk Medium'), local('SpaceGrotesk-Medium'),
+        url('~/assets/fonts/SpaceGrotesk-Medium.woff2') format('woff2'),
+        url('~/assets/fonts/SpaceGrotesk-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Space Grotesk';
+    src: local('Space Grotesk Bold'), local('SpaceGrotesk-Bold'),
+        url('~/assets/fonts/SpaceGrotesk-Bold.woff2') format('woff2'),
+        url('~/assets/fonts/SpaceGrotesk-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
