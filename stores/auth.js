@@ -15,11 +15,8 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await signIn('credentials', {
         email,
         password,
-        callbackUrl: '/',
         redirect: false
       })
-
-      console.log('login response', response)
 
       if (response?.error) {
         return { 
@@ -28,7 +25,10 @@ export const useAuthStore = defineStore('auth', () => {
         }
       }
 
+      // Force session refresh after login
+      await refreshNuxtData()
       showLoginModal.value = false
+      
       return { 
         success: true,
         message: 'Login successful'

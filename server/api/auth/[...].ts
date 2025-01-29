@@ -45,12 +45,21 @@ export default NuxtAuthHandler({
       if (user) {
         token.id = user.id
         token.email = user.email
+
+        // Fetch user from DB and include coins & bonus
+        const dbUser = await User.findById(user.id);
+        if (dbUser) {
+          token.coins = dbUser.coins;
+          token.bonus = dbUser.bonus;
+        }
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id
+        (session.user as any).id = token.id;
+        (session.user as any).coins = token.coins;
+        (session.user as any).bonus = token.bonus;
       }
       return session
     }

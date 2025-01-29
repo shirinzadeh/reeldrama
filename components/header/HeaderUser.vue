@@ -10,17 +10,17 @@
       
       <div class="user-menu">
         <div class="user-info">
-          <p class="user-label">Guest</p>
-          <p class="user-id">UID {{ userId }}</p>
+          <p class="user-label">{{ authStore.user?.email || 'Guest' }}</p>
+          <!-- <p class="user-id" v-if="authStore.user">UID {{ authStore.user.id }}</p> -->
         </div>
         
         <div class="coins-info">
           <div class="coin-item">
             <Icon name="mdi-coin" class="coin-icon" />
-            <span>{{ coins }} Coins</span>
+            <span>{{ userStore.user?.coins || 0 }} Coins</span>
           </div>
           <div class="coin-item">
-            <span>{{ bonus }} Bonus</span>
+            <span>{{ userStore.user?.bonus || 0 }} Bonus</span>
           </div>
         </div>
         
@@ -45,15 +45,15 @@
   </template>
   
   <script setup lang="ts">
-  const userId = ref('32843706')
-  const coins = ref(0)
-  const bonus = ref(0)
-  const isHovered = ref(false)
-  const authStore = useAuthStore()
+const userStore = useUserStore();
+const authStore = useAuthStore();
 
-  const handleLogin = () => {
-    // Handle login logic
-  }
+// Fetch user data when authenticated
+// watch(() => authStore.isAuthenticated, async (isAuthenticated) => {
+//   if (isAuthenticated) {
+//     await userStore.fetchUserData();
+//   } 
+// }, { immediate: true });
   </script>
   
   <style scoped>
@@ -108,6 +108,7 @@
     align-items: center;
     gap: 0.5rem;
     color: var(--text-secondary);
+    white-space: nowrap;
   }
   
   .coin-icon {

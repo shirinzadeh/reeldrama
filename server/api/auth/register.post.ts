@@ -28,7 +28,9 @@ export default defineEventHandler(async (event) => {
     // Create new user
     const user = await User.create({
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      coins: 0,
+      bonus: 100 
     })
 
     return {

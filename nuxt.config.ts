@@ -33,10 +33,10 @@ export default defineNuxtConfig({
     mongodbUri: process.env.MONGODB_URI,
     public: {
       apiBaseUrl: '',
-      siteUrl: ''
+      siteUrl: '',
     },
     auth: {
-      secret: process.env.AUTH_SECRET
+      secret: process.env.AUTH_SECRET,
     },
     google: {
       clientId: process.env.NUXT_GOOGLE_CLIENT_ID,
@@ -57,7 +57,6 @@ export default defineNuxtConfig({
     provider: 'ipx',
   },
   auth: {
-    baseURL: process.env.NUXT_PUBLIC_SITE_URL + "/api/auth",
     provider: {
       type: 'authjs',
     },
