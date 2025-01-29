@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/fonts',
     'nuxt-swiper',
-    // '@sidebase/nuxt-auth'
+    '@sidebase/nuxt-auth'
   ],
   fonts: {
     families: [
@@ -32,15 +32,16 @@ export default defineNuxtConfig({
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
     public: {
-      apiBaseUrl: ''
+      apiBaseUrl: '',
+      siteUrl: ''
     },
-    // google: {
-    //   clientId: process.env.NUXT_GOOGLE_CLIENT_ID,
-    //   clientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET
-    // },
-    // auth: {
-    //   secret: process.env.NUXT_AUTH_SECRET
-    // }
+    auth: {
+      secret: process.env.AUTH_SECRET
+    },
+    google: {
+      clientId: process.env.NUXT_GOOGLE_CLIENT_ID,
+      clientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET
+    }
   },
   image: {
     quality: 80,
@@ -55,10 +56,20 @@ export default defineNuxtConfig({
     },
     provider: 'ipx',
   },
-  // auth: {
-  //   baseURL: process.env.NUXT_PUBLIC_SITE_URL,
-  //   provider: {
-  //     type: 'authjs'
-  //   }
-  // }
+  auth: {
+    baseURL: process.env.NUXT_PUBLIC_SITE_URL + "/api/auth",
+    provider: {
+      type: 'authjs',
+    },
+    globalAppMiddleware: {
+      allow404WithoutAuth: true,
+      isEnabled: false
+    }
+  },
+  nitro: {
+    moduleSideEffects: ['bcrypt'],
+    experimental: {
+      asyncContext: true
+    }
+  },
 })

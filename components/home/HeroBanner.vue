@@ -178,9 +178,8 @@ const handleScroll = () => {
 
 .titles-sidebar {
   width: 25%;
-  background: rgba(0, 0, 0, 0.3);
-  border-top-left-radius: .25rem;
-  border-bottom-left-radius: .25rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 1rem;
   display: flex;
   flex-direction: column;
   overflow-y: auto;

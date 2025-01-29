@@ -29,11 +29,17 @@
         </NuxtLink>
         
         <div class="menu-items">
-          <button class="menu-item" @click="handleLogin">
-            <Icon name="mdi-login" />
+          <button class="menu-item"  v-if="!authStore.isAuthenticated" @click="authStore.showLoginModal = true" >
+            <Icon name="carbon:login" />
             <span>Log in</span>
           </button>
+          <button v-else class="menu-item" @click="authStore.signOut()">
+            <Icon name="carbon:logout" />
+            <span>Log out</span>
+          </button>
         </div>
+        <ModalLogin v-if="authStore.showLoginModal" @close="authStore.showLoginModal = false" />
+        <ModalRegister v-if="authStore.showRegisterModal" @close="authStore.showRegisterModal = false" />
       </div>
     </BaseDropdown>
   </template>
@@ -43,7 +49,8 @@
   const coins = ref(0)
   const bonus = ref(0)
   const isHovered = ref(false)
-  
+  const authStore = useAuthStore()
+
   const handleLogin = () => {
     // Handle login logic
   }

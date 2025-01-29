@@ -30,27 +30,145 @@ const breadcrumbItems = computed(() => [
   { name: currentEpisode.value?.title || '' },
 ]);
 
-const playEpisode = (index) => { currentEpisodeIndex.value = index; };
+const showPackagesModal = ref(false);
+const selectedLockedEpisodeIndex = ref(null);
+
+const playEpisode = (index) => {
+  // Always change the current episode index
+  currentEpisodeIndex.value = index;
+  
+  const episode = episodes.value[index];
+  if (!episode.free) {
+    selectedLockedEpisodeIndex.value = index;
+    showPackagesModal.value = true;
+  }
+};
+
+const handlePackagePurchase = () => {
+  // Handle the purchase completion
+  showPackagesModal.value = false;
+  selectedLockedEpisodeIndex.value = null;
+};
+
+const handleVideoEnded = () => {
+  const nextEpisodeIndex = currentEpisodeIndex.value + 1;
+  
+  // Check if there is a next episode
+  if (nextEpisodeIndex < episodes.value.length) {
+    // Always move to next episode, but show modal if it's locked
+    currentEpisodeIndex.value = nextEpisodeIndex;
+    
+    if (!episodes.value[nextEpisodeIndex].free) {
+      selectedLockedEpisodeIndex.value = nextEpisodeIndex;
+      showPackagesModal.value = true;
+    }
+  }
+};
+
+const shouldAutoPlay = computed(() => 
+  currentEpisode.value && currentEpisode.value.free
+);
+
+const isCurrentEpisodeLocked = computed(() => 
+  currentEpisode.value && !currentEpisode.value.free
+);
+
+// New computed property to get video URL only if episode is free
+const videoSource = computed(() => {
+  if (!currentEpisode.value || !currentEpisode.value.free) {
+    return null; // Return null for locked episodes
+  }
+  return currentEpisode.value.videoUrl;
+});
+
+// Add handler for video errors
+const handleVideoError = () => {
+  if (isCurrentEpisodeLocked.value) {
+    showPackagesModal.value = true;
+  }
+};
+
+// Add preventPlayback method
+const videoRef = ref(null);
+const preventLockedPlayback = () => {
+  if (isCurrentEpisodeLocked.value && videoRef.value) {
+    videoRef.value.pause();
+    videoRef.value.currentTime = 0;
+  }
+};
+
+const isLoading = computed(() => episodeStore.loading);
+const error = computed(() => episodeStore.error);
 </script>
 
 <template>
   <NuxtLink to="/" class="close-button" >
     <Icon name="carbon:close" />
   </NuxtLink>
-  <div class="container">
+  
+  <div v-if="isLoading" class="loading-state">
+    Loading...
+  </div>
+  
+  <div v-else-if="error" class="error-state">
+    {{ error }}
+  </div>
+  
+  <div v-else class="container">
     <div class="movie-page">
       <div class="content-wrapper">
       <!-- Video Section -->
       <div class="video-section">
-        <video
-          v-if="currentEpisode"
-          controls
-          autoplay
-          class="video-player"
-          :src="currentEpisode.videoUrl"
-        >
-          Your browser does not support the video tag.
-        </video>
+        <div class="video-wrapper">
+          <!-- Modified video element -->
+          <video
+            v-if="currentEpisode"
+            ref="videoRef"
+            controls
+            :autoplay="shouldAutoPlay"
+            class="video-player"
+            :src="videoSource"
+            @play="preventLockedPlayback"
+            @timeupdate="preventLockedPlayback"
+            @loadstart="preventLockedPlayback"
+            @error="handleVideoError"
+            @ended="handleVideoEnded"
+            :poster="movieDetail?.thumbnail"
+          >
+            Your browser does not support the video tag.
+          </video>
+          
+          <!-- Overlay for locked episodes -->
+          <div 
+            v-if="isCurrentEpisodeLocked" 
+            class="video-overlay"
+            @mousedown.prevent
+            @contextmenu.prevent
+          >
+            <div class="overlay-content">
+              <div class="premium-badge">PREMIUM</div>
+              <h3>Subscribe to Continue Watching</h3>
+              <p>Get unlimited access to all premium content</p>
+              <div class="benefits">
+                <div class="benefit-item">
+                  <Icon name="material-symbols:check-circle-outline" class="check-icon" />
+                  <span>HD Quality Content</span>
+                </div>
+                <div class="benefit-item">
+                  <Icon name="material-symbols:check-circle-outline" class="check-icon" />
+                  <span>Ad-free Experience</span>
+                </div>
+                <div class="benefit-item">
+                  <Icon name="material-symbols:check-circle-outline" class="check-icon" />
+                  <span>Exclusive Episodes</span>
+                </div>
+              </div>
+              <button class="unlock-btn" @click="showPackagesModal = true">
+                Top up to get 100% bonus
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Details Section -->
@@ -95,14 +213,38 @@ const playEpisode = (index) => { currentEpisodeIndex.value = index; };
 
           <!-- Episode Grid -->
           <div class="episode-grid">
-            <button v-for="(episode, index) in episodeStore.currentEpisode" :key="index" :class="['episode-number', { active: index === currentEpisodeIndex }]" @click="playEpisode(index)">
-              {{ index + 1 }}
+            <button 
+              v-for="(episode, index) in episodeStore.currentEpisode" 
+              :key="index" 
+              :class="[
+                'episode-number', 
+                { 
+                  active: index === currentEpisodeIndex,
+                  locked: !episode.free 
+                }
+              ]" 
+              @click="playEpisode(index)"
+            >
+              <span>{{ index + 1 }}</span>
+              <Icon v-if="!episode.free" name="ph:lock-simple-fill" class="lock-icon" />
             </button>
           </div>
         </div>
       </div>
     </div>
     </div>
+
+    <!-- Packages Modal -->
+    <BaseModal v-if="showPackagesModal" size="large" @close="showPackagesModal = false">
+      <div class="packages-modal">
+        <h2 class="modal-title">Get Access to All Episodes</h2>
+        <p class="modal-subtitle">Choose a package to unlock all episodes</p>
+        
+        <div class="packages-container">
+          <shopping-packages @package-selected="handlePackagePurchase" />
+        </div>
+      </div>
+    </BaseModal>
   </div>
 </template>
 
@@ -124,10 +266,97 @@ const playEpisode = (index) => { currentEpisodeIndex.value = index; };
   justify-content: center;
 }
 
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .video-player {
   height: 100%;
   aspect-ratio: 9/16;
   border-radius: 0.5rem;
+  z-index: 1;
+  object-fit: cover;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 0.5rem;
+  pointer-events: all !important;
+  user-select: none;
+  z-index: 2;
+}
+
+.overlay-content {
+  text-align: center;
+  padding: 2rem;
+  max-width: 400px;
+}
+
+.premium-badge {
+  display: inline-block;
+  background: #ef4444;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.overlay-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.overlay-content p {
+  color: #9ca3af;
+  margin-bottom: 2rem;
+}
+
+.benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+}
+
+.check-icon {
+  color: #ef4444;
+  font-size: 1.25rem;
+}
+
+.unlock-btn {
+  background: #ef4444;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.unlock-btn:hover {
+  background: #dc2626;
 }
 
 .details-section {
@@ -237,6 +466,7 @@ const playEpisode = (index) => { currentEpisodeIndex.value = index; };
 }
 
 .episode-number {
+  position: relative;
   aspect-ratio: 1;
   background: #1f2937;
   border: none;
@@ -254,8 +484,21 @@ const playEpisode = (index) => { currentEpisodeIndex.value = index; };
   background: #ef4444;
 }
 
+.episode-number.locked {
+  background: #1a1a1a;
+  color: #666;
+}
+
 .episode-number:hover {
   background: #374151;
+}
+
+.lock-icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
 .close-button {
@@ -283,6 +526,45 @@ const playEpisode = (index) => { currentEpisodeIndex.value = index; };
 
 .close-button i {
   font-size: 1.5rem;
+}
+
+.packages-modal {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.modal-subtitle {
+  color: #9ca3af;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* .packages-container {
+  max-height: 70vh;
+  overflow-y: auto;
+} */
+
+.loading-state,
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.error-state {
+  color: #ef4444;
 }
 
 @media screen and (max-width: 1024px) {
