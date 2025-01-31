@@ -1,20 +1,23 @@
 <script setup>
+const { locale } = useI18n()
 defineProps(['movie'])
+
+const { t } = useI18n()
 </script>
 
 <template>
-  <NuxtLink :to="`/episodes/${movie._id}`" class="movie-card" :aria-label="`Watch ${movie.title}`">
+  <NuxtLink :to="`/episodes/${movie._id}`" class="movie-card" :aria-label="`Watch ${movie.title[locale]}`">
     <NuxtImg
       :src="movie.thumbnail"
-      :alt="`Thumbnail for ${movie.title}`"
+      :alt="`Thumbnail for ${movie.title[locale]}`"
       class="movie-image"
       loading="lazy"
       placeholder
     />
     <div class="overlay">
       <div class="movie-info">
-        <h3 class="movie-title">{{ movie.title }}</h3>
-        <span class="play-button">▶ Watch Now</span>
+        <h3 class="movie-title">{{ movie.title[locale] }}</h3>
+        <span class="play-button">{{ t('watch_now') }}</span>
       </div>
     </div>
   </NuxtLink>

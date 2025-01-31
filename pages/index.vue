@@ -2,11 +2,13 @@
 definePageMeta({ layout: 'home' })
 import HeroBanner from '~/components/home/HeroBanner.vue'
 
+const {locale} = useI18n()
 const categoryStore = useCategoryStore()
 const movieStore = useMovieStore()
 
 await categoryStore.fetchCategories()
 await movieStore.fetchMovies()
+
 </script>
 
 <template>
@@ -17,21 +19,13 @@ await movieStore.fetchMovies()
       <div v-for="category in categoryStore.categories">
         <MovieSection 
           v-if="movieStore.getMoviesByCategory(category.slug).length > 0"
-          :key="category.slug" 
-          :title="category.name" 
+          :key="category._id" 
+          :title="category.name[locale]" 
           :movies="movieStore.getMoviesByCategory(category.slug)" 
           :icon="category.icon" 
         />
       </div>
     </div>
-
-    <!-- <div class="recommended-section">
-      <MovieSection 
-        title="More Recommended" 
-        :movies="movieStore.getRecommendedMovies" 
-        icon="🌟"
-      />
-    </div> -->
   </div>
 </template>
 

@@ -12,8 +12,10 @@ const props = defineProps({
 })
 
 const movieStore = useMovieStore()
-
 const swiperInstance = ref(null)
+const {t, locale} = useI18n()
+
+const localePath = useLocalePath()
 
 const onSwiper = (swiper) => {
   swiperInstance.value = swiper
@@ -62,7 +64,7 @@ const handleScroll = () => {
           <div class="gradient-overlay bottom"></div>
           <NuxtImg
             :src="movie.banner"
-            :alt="movie.title"
+            :alt="movie.title[locale]"
             class="banner-image"
             :style="{ transform: `translateY(${parallaxOffset}px)` }"
             format="webp"
@@ -70,9 +72,9 @@ const handleScroll = () => {
             placeholder
           />
           <div class="movie-info">
-            <NuxtLink :to="`/episodes/${movie._id}`" class="main-button watch-button" :aria-label="`Watch ${ movie.title }`">
+            <NuxtLink :to="localePath(`/episodes/${movie._id}`)" class="main-button watch-button" :aria-label="`Watch ${ movie.title[locale] }`">
               <Icon name="carbon:play-filled" class="play-icon" />
-              Watch Now
+              {{t('watch_now')}}
             </NuxtLink>
           </div>
         </div>
@@ -82,12 +84,12 @@ const handleScroll = () => {
       <NuxtLink 
         v-for="(movie, index) in movieStore.featuredMovies" 
         :key="movie._id"
-        :to="`/episodes/${movie._id}`"
+        :to="localePath(`/episodes/${movie._id}`)"
         class="movie-title-link"
-        :aria-label="`Navigate to ${ movie.title }`"
+        :aria-label="`Navigate to ${ movie.title[locale] }`"
         @mouseenter="onTitleHover(index)"
       >
-        {{ movie.title }}
+        {{ movie.title[locale] }}
       </NuxtLink>
     </div>
     </Swiper>

@@ -1,50 +1,51 @@
 <template>
-    <BaseDropdown :hoverDelay="50" :closeDelay="200">
-      <template #trigger>
-        <div class="user-trigger">
-          <div class="avatar">
-            <Icon name="mdi-account" size="1.5em" class="account-icon"/>
-          </div>
-        </div>
-      </template>
-      
-      <div class="user-menu">
-        <div class="user-info">
-          <p class="user-label">{{ authStore.user?.email || 'Guest' }}</p>
-          <!-- <p class="user-id" v-if="authStore.user">UID {{ authStore.user.id }}</p> -->
-        </div>
-        
-        <div class="coins-info">
-          <div class="coin-item">
-            <Icon name="mdi-coin" class="coin-icon" />
-            <span>{{ userStore.user?.coins || 0 }} Coins</span>
-          </div>
-          <div class="coin-item">
-            <span>{{ userStore.user?.bonus || 0 }} Bonus</span>
-          </div>
-        </div>
-        
-        <NuxtLink to="/shopping" class="top-up-button">
-          Top Up
-        </NuxtLink>
-        
-        <div class="menu-items">
-          <button class="menu-item"  v-if="!authStore.isAuthenticated" @click="authStore.showLoginModal = true" >
-            <Icon name="carbon:login" />
-            <span>Log in</span>
-          </button>
-          <button v-else class="menu-item" @click="authStore.signOut()">
-            <Icon name="carbon:logout" />
-            <span>Log out</span>
-          </button>
-        </div>
-        <ModalLogin v-if="authStore.showLoginModal" @close="authStore.showLoginModal = false" />
-        <ModalRegister v-if="authStore.showRegisterModal" @close="authStore.showRegisterModal = false" />
+  <BaseDropdown :hoverDelay="50" :closeDelay="200">
+    <template #trigger>
+    <div class="user-trigger">
+      <div class="avatar">
+      <Icon name="mdi-account" size="1.5em" class="account-icon"/>
       </div>
-    </BaseDropdown>
+    </div>
+    </template>
+    
+    <div class="user-menu">
+    <div class="user-info">
+      <p class="user-label">{{ authStore.user?.email || t('navigation.guest') }}</p>
+      <!-- <p class="user-id" v-if="authStore.user">UID {{ authStore.user.id }}</p> -->
+    </div>
+    
+    <div class="coins-info">
+      <div class="coin-item">
+      <Icon name="mdi-coin" class="coin-icon" />
+      <span>{{ userStore.user?.coins || 0 }} {{ t('navigation.coins') }}</span>
+      </div>
+      <div class="coin-item">
+      <span>{{ userStore.user?.bonus || 0 }} {{ t('navigation.bonus') }}</span>
+      </div>
+    </div>
+    
+    <NuxtLink to="/shopping" class="top-up-button">
+      {{ t('navigation.topUp') }}
+    </NuxtLink>
+    
+    <div class="menu-items">
+      <button class="menu-item"  v-if="!authStore.isAuthenticated" @click="authStore.showLoginModal = true" >
+      <Icon name="carbon:login" />
+      <span>{{ t('navigation.signIn') }}</span>
+      </button>
+      <button v-else class="menu-item" @click="authStore.signOut()">
+      <Icon name="carbon:logout" />
+      <span>{{ t('navigation.signOut') }}</span>
+      </button>
+    </div>
+    <ModalLogin v-if="authStore.showLoginModal" @close="authStore.showLoginModal = false" />
+    <ModalRegister v-if="authStore.showRegisterModal" @close="authStore.showRegisterModal = false" />
+    </div>
+  </BaseDropdown>
   </template>
   
   <script setup lang="ts">
+  const { t } = useI18n();
 const userStore = useUserStore();
 const authStore = useAuthStore();
 

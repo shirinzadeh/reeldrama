@@ -3,46 +3,39 @@
     <template #trigger>
       <div class="language-trigger">
         <Icon name="mdi-earth" class="globe-icon" />
-        <span>{{ currentLanguage }}</span>
+        <span>{{ currentLocaleNative }}</span>
         <Icon name="mdi-chevron-down" class="trigger-icon" />
       </div>
     </template>
-    
+
     <div class="language-menu">
-      <button
-        v-for="lang in languages"
-        :key="lang.code"
+      <NuxtLink
+        v-for="locale in availableLocales"
+        :to="switchLocalePath(locale.code)"
+        :key="locale.code"
         class="language-item"
-        :class="{ active: currentLanguage === lang.name }"
-        @click="selectLanguage(lang)"
+        :class="{ active: locale.code === currentLocale }"
       >
-        <span class="language-name">{{ lang.name }}</span>
-        <span class="language-native">{{ lang.native }}</span>
-      </button>
+      <span class="language-native">{{ locale.native }}</span>
+        <span class="language-name">{{ locale.name }}</span>
+    </NuxtLink>
     </div>
   </BaseDropdown>
 </template>
 
 <script setup lang="ts">
-interface Language {
-  code: string
-  name: string
-  native: string
-}
+const { locale: currentLocale, locales } = useI18n()
+const switchLocalePath = useSwitchLocalePath()
 
-const languages: Language[] = [
-  { code: 'en', name: 'English', native: 'English' },
-  { code: 'es', name: 'Spanish', native: 'Español' },
-  { code: 'fr', name: 'French', native: 'Français' },
-  { code: 'de', name: 'German', native: 'Deutsch' },
-]
-
-const currentLanguage = ref('English')
-
-const selectLanguage = (lang: Language) => {
-  currentLanguage.value = lang.name
-  // Add your language switching logic here
-}
+const availableLocales = computed(() => {
+  return locales.value.filter(i => i.code !== currentLocale.value)
+})
+// Compute current language name
+// Get current language's name
+const currentLocaleNative = computed(() => {
+  const current = locales.value.find(l => l.code === currentLocale.value)
+  return current ? current.native : ''
+})
 </script>
 
 <style scoped>
@@ -59,12 +52,7 @@ const selectLanguage = (lang: Language) => {
   background: var(--dark-surface-soft);
 }
 
-.globe-icon {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-}
-
-.trigger-icon {
+.globe-icon, .trigger-icon {
   font-size: 1.2rem;
   color: var(--text-secondary);
 }
@@ -76,10 +64,11 @@ const selectLanguage = (lang: Language) => {
 }
 
 .language-item {
-  display: flex;
-  flex-direction: column;
   width: 100%;
   padding: 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+  align-items: center;
   background: none;
   border: none;
   color: var(--text-primary);
@@ -89,47 +78,17 @@ const selectLanguage = (lang: Language) => {
   transition: background 0.2s;
 }
 
-.language-item:hover {
-  background: var(--dark-surface-soft);
-}
-
-.language-item.active {
-  background: var(--dark-surface-soft);
-}
-
 .language-name {
-  font-weight: 500;
-}
-
-.language-native {
   font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
-.trigger-icon {
-  transition: transform 0.2s ease;
+.language-native {
+  font-size: 1rem;
+  color: var(--text-primary);
 }
 
-.icon-rotate {
-  transform: rotate(180deg);
-}
-
-/* Enhanced hover effects */
-.language-item {
-  transition: all 0.2s ease;
-}
-
-.language-item:hover {
-  background: var(--dark-surface-soft);
-  transform: translateX(4px);
-}
-
-/* Add a subtle hover indication for the trigger */
-.language-trigger {
-  transition: all 0.2s ease;
-}
-
-.language-trigger:hover {
+.language-item:hover, .language-item.active {
   background: var(--dark-surface-soft);
 }
 </style>

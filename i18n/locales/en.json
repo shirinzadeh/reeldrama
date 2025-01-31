@@ -1,0 +1,63 @@
+{
+  "watch_now": "Watch Now",
+  "loading": "Loading...",
+  "navigation": {
+    "home": "Home",
+    "genre": "Genre",
+    "fandom": "Fandom",
+    "movies": "Movies",
+    "profile": "Profile",
+    "guest": "Guest",
+    "topUp": "Top Up",
+    "coins": "Coins",
+    "bonus": "Bonus",
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
+  },
+  "movies": {
+    "title": "Movies",
+    "featured": "Featured",
+    "recommended": "Recommended For You",
+    "related": "Related Movies",
+    "latest": "Latest",
+    "popular": "Popular",
+    "categories": "Categories",
+    "watchNow": "Watch Now",
+    "continueWatching": "Continue Watching",
+    "episodes": "Episodes"
+  },
+  "episodes": {
+    "title": "Episodes",
+    "episode": "Episode",
+    "free": "Free",
+    "premium": "Premium",
+    "nextEpisode": "Next Episode",
+    "previousEpisode": "Previous Episode",
+    "watchNow": "Watch Now",
+    "locked": "Locked"
+  },
+  "categories": {
+    "newRelease": "New Release",
+    "secretIdentity": "Secret Identity",
+    "loveAndBetrayal": "Love & Betrayal",
+    "billionaireRomance": "Billionaire Romance",
+    "asian": "Asian"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password",
+    "continueWith": "Continue with"
+  },
+  "profile": {
+    "settings": "Settings",
+    "myLibrary": "My Library",
+    "watchHistory": "Watch History",
+    "favorites": "Favorites",
+    "subscription": "Subscription",
+    "coins": "Coins"
+  }
+}

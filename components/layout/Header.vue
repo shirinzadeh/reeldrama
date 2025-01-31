@@ -1,3 +1,14 @@
+<script setup>
+const {t} = useI18n()
+const isScrolled = ref(false)
+
+onMounted(() => {
+  window.addEventListener('scroll', () => {
+    isScrolled.value = window.scrollY > 0
+  })
+})
+</script>
+
 <template>
   <header class="header" :class="{ 'header-scrolled': isScrolled }">
     <div class="header-left">
@@ -5,9 +16,9 @@
         <span class="logo-text">ReelShort</span>
       </NuxtLink>
       <nav class="nav-menu">
-        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Home">Home</NuxtLink>
-        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Genre">Genre</NuxtLink>
-        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Fandom">Fandom</NuxtLink>
+        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Home">{{ t('navigation.home') }}</NuxtLink>
+        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Genre">{{ t('navigation.genre') }}</NuxtLink>
+        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Fandom">{{ t('navigation.fandom') }}</NuxtLink>
       </nav>
     </div>
     
@@ -27,16 +38,6 @@
     </div>
   </header>
 </template>
-
-<script setup>
-const isScrolled = ref(false)
-
-onMounted(() => {
-  window.addEventListener('scroll', () => {
-    isScrolled.value = window.scrollY > 0
-  })
-})
-</script>
 
 <style scoped>
 .header {

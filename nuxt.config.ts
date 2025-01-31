@@ -10,7 +10,8 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/fonts',
     'nuxt-swiper',
-    '@sidebase/nuxt-auth'
+    '@sidebase/nuxt-auth',
+    '@nuxtjs/i18n'
   ],
   fonts: {
     families: [
@@ -29,6 +30,63 @@ export default defineNuxtConfig({
   css: [
     '@/assets/css/main.css'
   ],
+  image: {
+    quality: 80,
+    format: ['webp'],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
+    provider: 'ipx',
+  },
+  i18n: {
+    lazy: true,
+    // langDir: 'locales/',
+    strategy: 'prefix_except_default',
+    defaultLocale: 'en',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root'  // recommended,
+    },
+    locales: [
+      {
+        code: 'en',
+        // iso: 'en-US',
+        name: 'English',
+        native: 'English',
+        file: 'en.json'
+      },
+      {
+        code: 'tr',
+        // iso: 'tr-TR',
+        name: 'Turkish',
+        native: 'Türkçe',
+        file: 'tr.json'
+      },
+      {
+        code: 'ar',
+        // iso: 'ar-SA',
+        native: 'العربية',
+        name: 'Arabic',
+        file: 'ar.json'
+      }
+    ],
+    vueI18n: './i18n.config.ts'
+  },
+  auth: {
+    provider: {
+      type: 'authjs',
+    },
+    globalAppMiddleware: {
+      allow404WithoutAuth: true,
+      isEnabled: false
+    }
+  },
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
     public: {
@@ -43,32 +101,23 @@ export default defineNuxtConfig({
       clientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET
     }
   },
-  image: {
-    quality: 80,
-    format: ['webp'],
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
-    },
-    provider: 'ipx',
-  },
-  auth: {
-    provider: {
-      type: 'authjs',
-    },
-    globalAppMiddleware: {
-      allow404WithoutAuth: true,
-      isEnabled: false
-    }
-  },
+  // typescript: {
+  //   strict: true,
+  //   typeCheck: true
+  // },
   nitro: {
     moduleSideEffects: ['bcrypt'],
     experimental: {
       asyncContext: true
     }
   },
+  router: {
+    options: {
+      strict: true
+    }
+  },
+  experimental: {
+    payloadExtraction: false
+  },
+  pages: true
 })

@@ -1,0 +1,63 @@
+{
+  "watch_now": "Şimdi İzle",
+  "loading": "Yükleniyor...",
+  "navigation": {
+    "home": "Ana Sayfa",
+    "genre": "Türler",
+    "fandom": "Hayran",
+    "movies": "Filmler",
+    "profile": "Profil",
+    "guest": "Misafir",
+    "topUp": "Yükleme",
+    "coins": "Jetonlar",
+    "bonus": "Bonus",
+    "signIn": "Giriş Yap",
+    "signOut": "Çıkış Yap"
+  },
+  "movies": {
+    "title": "Filmler",
+    "featured": "Öne Çıkanlar",
+    "recommended": "Sizin İçin Önerilen",
+    "related": "İlgili Filmler",
+    "latest": "Son Eklenenler",
+    "popular": "Popüler",
+    "categories": "Kategoriler",
+    "watchNow": "İzle",
+    "continueWatching": "İzlemeye Devam Et",
+    "episodes": "Bölümler"
+  },
+  "episodes": {
+    "title": "Bölümler",
+    "episode": "Bölüm",
+    "free": "Ücretsiz",
+    "premium": "Premium",
+    "nextEpisode": "Sonraki Bölüm",
+    "previousEpisode": "Önceki Bölüm",
+    "watchNow": "İzle",
+    "locked": "Kilitli"
+  },
+  "categories": {
+    "newRelease": "Yeni Çıkan",
+    "secretIdentity": "Gizli Kimlik",
+    "loveAndBetrayal": "Aşk ve İhanet",
+    "billionaireRomance": "Milyarder Aşk",
+    "asian": "Asya"
+  },
+  "auth": {
+    "signIn": "Giriş Yap",
+    "signUp": "Kayıt Ol",
+    "signOut": "Çıkış Yap",
+    "email": "E-posta",
+    "password": "Şifre",
+    "forgotPassword": "Şifremi Unuttum",
+    "continueWith": "ile devam et"
+  },
+  "profile": {
+    "settings": "Ayarlar",
+    "myLibrary": "Kütüphanem",
+    "watchHistory": "İzleme Geçmişi",
+    "favorites": "Favoriler",
+    "subscription": "Abonelik",
+    "coins": "Jetonlar"
+  }
+}

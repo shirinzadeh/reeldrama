@@ -7,8 +7,9 @@ const episodeSchema = new mongoose.Schema({
     required: true
   },
   title: {
-    type: String,
-    required: true
+    en: { type: String, required: true },
+    tr: { type: String, required: true },
+    ar: { type: String, required: true }
   },
   order: {
     type: Number,

@@ -1,0 +1,56 @@
+{
+  "welcome": "مرحباً",
+  "navigation": {
+    "home": "الرئيسية",
+    "genre": "النوع",
+    "fandom": "المعجبين",
+    "movies": "الأفلام",
+    "profile": "الملف الشخصي"
+  },
+  "movies": {
+    "title": "الأفلام",
+    "featured": "مميز",
+    "recommended": "موصى به لك",
+    "related": "أفلام ذات صلة",
+    "latest": "أحدث",
+    "popular": "شائع",
+    "categories": "الفئات",
+    "watchNow": "شاهد الآن",
+    "continueWatching": "متابعة المشاهدة",
+    "episodes": "الحلقات"
+  },
+  "episodes": {
+    "title": "الحلقات",
+    "episode": "حلقة",
+    "free": "مجاني",
+    "premium": "مميز",
+    "nextEpisode": "الحلقة التالية",
+    "previousEpisode": "الحلقة السابقة",
+    "watchNow": "شاهد الآن",
+    "locked": "مقفل"
+  },
+  "categories": {
+    "newRelease": "إصدار جديد",
+    "secretIdentity": "هوية سرية",
+    "loveAndBetrayal": "الحب والخيانة",
+    "billionaireRomance": "رومانسية المليارديرات",
+    "asian": "آسيوي"
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signUp": "التسجيل",
+    "signOut": "تسجيل الخروج",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور",
+    "continueWith": "المتابعة باستخدام"
+  },
+  "profile": {
+    "settings": "الإعدادات",
+    "myLibrary": "مكتبتي",
+    "watchHistory": "سجل المشاهدة",
+    "favorites": "المفضلة",
+    "subscription": "الاشتراك",
+    "coins": "العملات"
+  }
+}

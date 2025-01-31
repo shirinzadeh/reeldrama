@@ -1,13 +1,16 @@
 <script setup>
 definePageMeta({ layout: "episodes" });
 
+const { t, locale } = useI18n();
+const localePath = useLocalePath();
+
 const movieStore = useMovieStore();
 const episodeStore = useEpisodeStore();
 
 const route = useRoute();
 const movieId = route.params.id;
-const initialEpisodeIndex = parseInt(route.query.episode) || 0;
 
+const initialEpisodeIndex = parseInt(route.query.episode) || 0;
 const currentEpisodeIndex = ref(initialEpisodeIndex);
 
 // Fetch movie and episode details on movieId change
@@ -26,8 +29,8 @@ const currentEpisode = computed(() => episodes.value[currentEpisodeIndex.value] 
 const episodeCount = computed(() => episodes.value.length);
 
 const breadcrumbItems = computed(() => [
-  { name: movieDetail.value?.title || '', href: `/movies/${movieId}` },
-  { name: currentEpisode.value?.title || '' },
+  { name: movieDetail.value?.title?.[locale.value] || '', href: `/movies/${movieId}` },
+  { name: currentEpisode.value?.title?.[locale.value] || '' },
 ]);
 
 const showPackagesModal = ref(false);
@@ -102,12 +105,12 @@ const error = computed(() => episodeStore.error);
 </script>
 
 <template>
-  <NuxtLink to="/" class="close-button" >
+  <NuxtLink :to="localePath('/')" class="close-button" >
     <Icon name="carbon:close" />
   </NuxtLink>
   
   <div v-if="isLoading" class="loading-state">
-    Loading...
+    {{t('loading')}}
   </div>
   
   <div v-else-if="error" class="error-state">
@@ -175,13 +178,13 @@ const error = computed(() => episodeStore.error);
       <div class="details-section">
         <Breadcrumb :items="breadcrumbItems" />
         <h1 class="movie-title">
-          {{ currentEpisode?.title }} - {{ movieDetail?.title }}
+          {{ currentEpisode?.title[locale] }} - {{ movieDetail?.title[locale] }}
         </h1>
 
         <!-- Plot Section -->
         <div class="plot-section">
-          <h2 class="section-title">Plot of {{ movieDetail?.title }}</h2>
-          <p class="plot-text">{{ movieDetail?.description }}</p>
+          <h2 class="section-title">Plot of {{ movieDetail?.title[locale] }}</h2>
+          <p class="plot-text">{{ movieDetail?.description[locale] }}</p>
         </div>
 
         <!-- Tags -->
