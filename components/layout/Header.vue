@@ -1,5 +1,6 @@
 <script setup>
 const {t} = useI18n()
+const localePath = useLocalePath()
 const isScrolled = ref(false)
 
 onMounted(() => {
@@ -12,13 +13,12 @@ onMounted(() => {
 <template>
   <header class="header" :class="{ 'header-scrolled': isScrolled }">
     <div class="header-left">
-      <NuxtLink to="/" class="logo">
+      <NuxtLink :to="localePath('/')" class="logo">
         <span class="logo-text">ReelShort</span>
       </NuxtLink>
       <nav class="nav-menu">
-        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Home">{{ t('navigation.home') }}</NuxtLink>
-        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Genre">{{ t('navigation.genre') }}</NuxtLink>
-        <NuxtLink to="/" class="nav-link" aria-label="Navigate to Fandom">{{ t('navigation.fandom') }}</NuxtLink>
+        <NuxtLink :to="localePath('/')" class="nav-link" aria-label="Navigate to Home">{{ t('home') }}</NuxtLink>
+        <!-- <NuxtLink :to="localePath('/movie-genres')" class="nav-link" aria-label="Navigate to Genre">{{ t('navigation.genre') }}</NuxtLink> -->
       </nav>
     </div>
     

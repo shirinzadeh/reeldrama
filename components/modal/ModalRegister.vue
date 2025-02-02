@@ -1,13 +1,13 @@
 <template>
   <BaseModal size="small" @close="$emit('close')">
     <div class="login-container">
-      <h2 class="login-title">Create your account</h2>
-      <p class="login-subtitle">Join us today and start sharing your content</p>
+      <h2 class="login-title">{{ $t('auth.createAccount') }}</h2>
+      <p class="login-subtitle">{{ $t('auth.joinUsToday') }}</p>
       
       <form @submit.prevent="handleSubmit" class="login-form">
         
         <div class="form-group">
-          <label class="form-label">Email address</label>
+          <label class="form-label">{{ $t('auth.emailAddress') }}</label>
           <input
             v-model="formData.email"
             type="email"
@@ -17,7 +17,7 @@
         </div>
         
         <div class="form-group">
-          <label class="form-label">Password</label>
+          <label class="form-label">{{ $t('auth.password') }}</label>
           <input
             v-model="formData.password"
             type="password"
@@ -33,13 +33,13 @@
           :class="{ 'button-loading': loading }"
           :disabled="loading"
         >
-          <span v-if="!loading">Create account</span>
+          <span v-if="!loading">{{ $t('auth.createAccount') }}</span>
           <Icon v-else name="eos-icons:loading" />
         </button>
       </form>
 
       <div class="divider">
-        <span>Already have an account?</span>
+        <span>{{ $t('auth.alreadyHaveAccount') }}</span>
       </div>
 
       <button 
@@ -47,7 +47,7 @@
         class="signup-button"
         @click="switchToLogin"
       >
-        Sign in instead
+        {{ $t('auth.signInInstead') }}
       </button>
     </div>
   </BaseModal>

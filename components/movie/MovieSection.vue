@@ -1,33 +1,33 @@
 <script setup>
-const props = defineProps({
+const { t } = useI18n()
+
+// Make the props more strict with proper types
+defineProps({
+  movies: {
+    type: Array,
+    required: true,
+    default: () => []
+  },
   title: {
     type: String,
     required: true
-  },
-  movies: {
-    type: Array,
-    required: true
-  },
-  icon: {
-    type: String,
-    required: false,
   }
 })
-
 </script>
 
 <template>
-  <div class="movie-section">
-    <div class="container">
-      <h2 class="section-title">
-        <span v-if="icon" class="section-icon">{{ icon }}</span>
-        <span>{{ title }}</span>
-      </h2>
-      <div class="movie-grid">
-        <LazyMovieCard v-for="movie in movies" :key="movie._id" :movie="movie" />
+    <section class="movie-section">
+      <div class="container">
+          <h2 class="section-title">{{ title }}</h2>
+        <div class="movie-grid">
+          <MovieCard 
+            v-for="movie in movies" 
+            :key="movie._id" 
+            :movie="movie" 
+          />
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
 </template>
 
 <style scoped>

@@ -1,9 +1,11 @@
 <script setup>
-
 const route = useRoute();
 const movieStore = useMovieStore();
 const episodeStore = useEpisodeStore();
 const { movieDetail } = storeToRefs(movieStore);
+const { t, locale } = useI18n();
+const { formatDate } = useFormattedDate();
+const localePath = useLocalePath();
 
 const movieId = route.params.id;
 
@@ -11,16 +13,8 @@ await movieStore.fetchMovies(movieId);
 await movieStore.fetchMovieDetail(movieId);
 await episodeStore.fetchEpisodeDetail(movieId);
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
-
-const playEpisode = async (episode, index) => {
-  navigateTo(`/episodes/${movieDetail.value._id}?episode=${index}`);
+const playEpisode = async (_, index) => {
+  navigateTo(localePath(`/episodes/${movieDetail.value._id}?episode=${index}`));
 };
 </script>
 
@@ -32,17 +26,17 @@ const playEpisode = async (episode, index) => {
       <div class="banner-overlay"></div>
 
       <div class="movie-info">
-          <h1 class="movie-title">{{ movieDetail?.title }}</h1>
+          <h1 class="movie-title">{{ movieDetail?.title[locale] }}</h1>
           <div class="movie-meta">
             <span class="release-date">{{ formatDate(movieDetail?.releaseDate) }}</span>
             <span class="separator">•</span>
             <span v-for="tag in movieDetail?.tags" :key="tag" class="tag">{{ tag }}</span>
           </div>
-          <p class="movie-description">{{ movieDetail?.description }}</p>
+          <p class="movie-description">{{ movieDetail?.description[locale] }}</p>
           <div class="action-buttons">
             <NuxtLink :to="`/episodes/${movieDetail._id}`" class="main-button watch-button">
               <span class="play-icon">▶</span>
-              Watch Now
+              {{ t('watch_now') }}
             </NuxtLink>
             <!-- <button class="add-list-button">
               <span class="plus-icon">+</span>
@@ -55,7 +49,7 @@ const playEpisode = async (episode, index) => {
     <!-- Episodes Section -->
     <div class="container">
       <div class="episodes-section">
-        <h2 class="section-title">Episode List</h2>
+        <h2 class="section-title">{{ t('episodes.list') }}</h2>
         <div class="episodes-grid">
           <div v-for="(episode, index) in episodeStore.currentEpisode" :key="episode._id" class="episode-card" @click="playEpisode(episode, index)">
             <!-- <div class="episode-thumbnail">
@@ -66,7 +60,7 @@ const playEpisode = async (episode, index) => {
               </span>
             </div> -->
             <div class="episode-info">
-              <h3 class="episode-title">{{ episode.title }}</h3>
+              <h3 class="episode-title">{{ episode.title[locale] }}</h3>
             </div>
           </div>
         </div>
@@ -74,7 +68,13 @@ const playEpisode = async (episode, index) => {
     </div>
 
     <!-- You Might Like Section -->
-    <MovieSection title="You Might Like" :movies="movieStore.getRelatedMovies" />
+    <ClientOnly>
+      <!-- without ClientOnly wrapper title gives hydration mismatch error  -->
+      <MovieSection 
+        :movies="movieStore.getRelatedMovies"
+        :title="t('movie.youMightLike')"
+      />
+    </ClientOnly>
   </div>
 </template>
 

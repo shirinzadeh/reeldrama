@@ -1,40 +1,33 @@
 {
   "watch_now": "Şimdi İzle",
   "loading": "Yükleniyor...",
+  "payNow": "Şimdi öde",
+  "coins": "Jeton",
+  "bonus": "Bonus",
+  "episode": "Bölüm",
+  "home": "Ana Sayfa",
   "navigation": {
-    "home": "Ana Sayfa",
     "genre": "Türler",
     "fandom": "Hayran",
     "movies": "Filmler",
     "profile": "Profil",
     "guest": "Misafir",
-    "topUp": "Yükleme",
-    "coins": "Jetonlar",
-    "bonus": "Bonus",
-    "signIn": "Giriş Yap",
-    "signOut": "Çıkış Yap"
+    "topUp": "Yükleme"
   },
-  "movies": {
-    "title": "Filmler",
-    "featured": "Öne Çıkanlar",
-    "recommended": "Sizin İçin Önerilen",
-    "related": "İlgili Filmler",
-    "latest": "Son Eklenenler",
-    "popular": "Popüler",
-    "categories": "Kategoriler",
-    "watchNow": "İzle",
-    "continueWatching": "İzlemeye Devam Et",
-    "episodes": "Bölümler"
+  "movie": {
+    "youMightLike": "Beğenebilirsiniz"
   },
   "episodes": {
-    "title": "Bölümler",
-    "episode": "Bölüm",
-    "free": "Ücretsiz",
-    "premium": "Premium",
-    "nextEpisode": "Sonraki Bölüm",
-    "previousEpisode": "Önceki Bölüm",
-    "watchNow": "İzle",
-    "locked": "Kilitli"
+    "badge": "PREMIUM",
+    "subscribe": "Devam Etmek İçin Abone Ol",
+    "access": "Tüm premium içeriğe sınırsız erişim sağlayın",
+    "quality": "HD Kalitesinde İçerik",
+    "adFree": "Reklamsız Deneyim",
+    "exclusive": "Özel Bölümler",
+    "button": "100% bonus almak için yükleme yapın",
+    "list": "Bölüm Listesi",
+    "completed": "Tamamlandı",
+    "inProgress": "Devam Ediyor"
   },
   "categories": {
     "newRelease": "Yeni Çıkan",
@@ -43,14 +36,26 @@
     "billionaireRomance": "Milyarder Aşk",
     "asian": "Asya"
   },
+  "package": {
+    "title": "Tüm Bölümlere Erişim Sağlayın",
+    "subtitle": "Tüm bölümlerin kilidini açmak için bir paket seçin",
+    "newUserOnly": "YENİ KULLANICIYA ÖZEL",
+    "paymentMethod": "Ödeme Yöntemi",
+    "paypal": "Paypal",
+    "creditCard": "Kredi Kartı"
+    },
   "auth": {
     "signIn": "Giriş Yap",
-    "signUp": "Kayıt Ol",
     "signOut": "Çıkış Yap",
-    "email": "E-posta",
+    "welcomeBack": "Tekrar hoş geldiniz",
+    "enterCredentials": "Hesabınıza erişmek için bilgilerinizi girin",
+    "emailAddress": "E-posta adresi",
     "password": "Şifre",
-    "forgotPassword": "Şifremi Unuttum",
-    "continueWith": "ile devam et"
+    "noAccount": "Hesabınız yok mu?",
+    "createAccount": "Hesap oluştur",
+    "joinUsToday": "Bugün bize katılın ve içeriklerinizi paylaşmaya başlayın",
+    "alreadyHaveAccount": "Zaten hesabınız var mı?",
+    "signInInstead": "Bunun yerine giriş yapın"
   },
   "profile": {
     "settings": "Ayarlar",
@@ -59,5 +64,12 @@
     "favorites": "Favoriler",
     "subscription": "Abonelik",
     "coins": "Jetonlar"
+  },
+  "date": {
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "daysAgo": "{days} gün önce",
+    "monthsAgo": "{months} ay önce",
+    "yearsAgo": "{years} yıl önce"
   }
 }

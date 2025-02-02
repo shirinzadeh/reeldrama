@@ -1,12 +1,12 @@
 <template>
   <BaseModal size="small" @close="$emit('close')">
     <div class="login-container">
-      <h2 class="login-title">Welcome back</h2>
-      <p class="login-subtitle">Enter your credentials to access your account</p>
+      <h2 class="login-title">{{ $t('auth.welcomeBack') }}</h2>
+      <p class="login-subtitle">{{ $t('auth.enterCredentials') }}</p>
       
       <form @submit.prevent="handleSubmit" class="login-form">
         <div class="form-group">
-          <label class="form-label">Email address</label>
+          <label class="form-label">{{ $t('auth.emailAddress') }}</label>
           <input
             v-model="email"
             type="email"
@@ -16,7 +16,7 @@
         </div>
         
         <div class="form-group">
-          <label class="form-label">Password</label>
+          <label class="form-label">{{ $t('auth.password') }}</label>
           <input
             v-model="password"
             type="password"
@@ -31,13 +31,13 @@
           :class="{ 'button-loading': loading }"
           :disabled="loading"
         >
-          <span v-if="!loading">Sign in</span>
+          <span v-if="!loading">{{ $t('auth.signIn') }}</span>
           <Icon v-else name="eos-icons:loading" />
         </button>
       </form>
 
       <div class="divider">
-        <span>Don't have an account?</span>
+        <span>{{ $t('auth.noAccount') }}</span>
       </div>
 
       <button 
@@ -45,7 +45,7 @@
         class="signup-button"
         @click="switchToRegister"
       >
-        Create an account
+        {{ $t('auth.createAccount') }}
       </button>
     </div>
   </BaseModal>

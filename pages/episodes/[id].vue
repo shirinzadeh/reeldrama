@@ -29,7 +29,7 @@ const currentEpisode = computed(() => episodes.value[currentEpisodeIndex.value] 
 const episodeCount = computed(() => episodes.value.length);
 
 const breadcrumbItems = computed(() => [
-  { name: movieDetail.value?.title?.[locale.value] || '', href: `/movies/${movieId}` },
+  { name: movieDetail.value?.title?.[locale.value] || '', href: localePath(`/movies/${movieId}`) },
   { name: currentEpisode.value?.title?.[locale.value] || '' },
 ]);
 
@@ -149,25 +149,25 @@ const error = computed(() => episodeStore.error);
             @contextmenu.prevent
           >
             <div class="overlay-content">
-              <div class="premium-badge">PREMIUM</div>
-              <h3>Subscribe to Continue Watching</h3>
-              <p>Get unlimited access to all premium content</p>
-              <div class="benefits">
+                <div class="premium-badge">{{ t('episodes.badge') }}</div>
+                <h3>{{ t('episodes.subscribe') }}</h3>
+                <p>{{ t('episodes.access') }}</p>
+                <div class="benefits">
                 <div class="benefit-item">
-                  <Icon name="material-symbols:check-circle-outline" class="check-icon" />
-                  <span>HD Quality Content</span>
+                <Icon name="material-symbols:check-circle-outline" class="check-icon" />
+                <span>{{ t('episodes.quality') }}</span>
                 </div>
                 <div class="benefit-item">
-                  <Icon name="material-symbols:check-circle-outline" class="check-icon" />
-                  <span>Ad-free Experience</span>
+                <Icon name="material-symbols:check-circle-outline" class="check-icon" />
+                <span>{{ t('episodes.adFree') }}</span>
                 </div>
                 <div class="benefit-item">
-                  <Icon name="material-symbols:check-circle-outline" class="check-icon" />
-                  <span>Exclusive Episodes</span>
+                <Icon name="material-symbols:check-circle-outline" class="check-icon" />
+                <span>{{ t('episodes.exclusive') }}</span>
                 </div>
-              </div>
-              <button class="unlock-btn" @click="showPackagesModal = true">
-                Top up to get 100% bonus
+                </div>
+                <button class="unlock-btn" @click="showPackagesModal = true">
+                {{ t('episodes.button') }}
               </button>
             </div>
           </div>
@@ -200,17 +200,17 @@ const error = computed(() => episodeStore.error);
 
         <!-- Episodes Section -->
         <div class="episodes-section">
-          <div class="episodes-header">
-            <h2 class="section-title">Episode List</h2>
-          </div>
+            <div class="episodes-header">
+            <h2 class="section-title">{{ t('episodes.list') }}</h2>
+            </div>
 
-          <!-- Episode Status -->
-          <div class="episode-status">
+            <!-- Episode Status -->
+            <div class="episode-status">
             <span>
-              Episode ({{ currentEpisodeIndex + 1 }} / {{ episodeCount }})
+              {{ t('episode') }} ({{ currentEpisodeIndex + 1 }} / {{ episodeCount }})
             </span>
             <span class="status-completed">
-              {{ episodeCount === currentEpisodeIndex + 1 ? 'Completed' : 'In Progress' }}
+                {{ episodeCount === currentEpisodeIndex + 1 ? t('episodes.completed') : t('episodes.inProgress') }}
             </span>
           </div>
 
@@ -240,9 +240,8 @@ const error = computed(() => episodeStore.error);
     <!-- Packages Modal -->
     <BaseModal v-if="showPackagesModal" size="large" @close="showPackagesModal = false">
       <div class="packages-modal">
-        <h2 class="modal-title">Get Access to All Episodes</h2>
-        <p class="modal-subtitle">Choose a package to unlock all episodes</p>
-        
+        <h2 class="modal-title">{{ t('package.title') }}</h2>
+        <p class="modal-subtitle">{{ t('package.subtitle') }}</p>
         <div class="packages-container">
           <shopping-packages @package-selected="handlePackagePurchase" />
         </div>

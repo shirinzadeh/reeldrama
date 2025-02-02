@@ -3,7 +3,7 @@
     <ol class="breadcrumb-list">
       <li class="breadcrumb-item">
         <div class="breadcrumb-item-content">
-          <NuxtLink :to="localePath('/')" class="breadcrumb-link">Home</NuxtLink>
+          <NuxtLink :to="localePath('/')" class="breadcrumb-link">{{t('home')}}</NuxtLink>
           <span class="breadcrumb-separator">/</span>
         </div>
       </li>
@@ -39,6 +39,7 @@ defineProps<{
   items: BreadcrumbItem[];
 }>();
 
+const { t } = useI18n();
 const localePath = useLocalePath()
 </script>
 

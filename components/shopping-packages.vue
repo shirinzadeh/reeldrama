@@ -6,11 +6,11 @@
                 <div class="offer-left">
                     <Icon name="ph:coins-duotone" class="coin-icon" />
                     <div>
-                        <div class="new-user-label">NEW USER ONLY</div>
+                        <div class="new-user-label">{{ $t('package.newUserOnly') }}</div>
                         <div class="coins-amount">
                             <span class="amount">{{ newUserPackage.coins }}</span>
-                            <span class="coins-text">Coins</span>
-                            <span class="bonus">+{{ newUserPackage.bonus }} Bonus</span>
+                            <span class="coins-text">{{ $t('coins') }}</span>
+                            <span class="bonus">+{{ newUserPackage.bonus }} {{ $t('bonus') }}</span>
                         </div>
                     </div>
                 </div>
@@ -31,17 +31,17 @@
 
                 <!-- New User Label -->
                 <div v-if="pkg.isNewUserOnly" class="new-user-label">
-                    NEW USER ONLY
+                    {{ $t('package.newUserOnly') }}
                 </div>
 
                 <div class="offer-content">
                     <div class="coin-amount">
                         <span class="amount">{{ pkg.coins }} </span>
-                        <span class="coins-text"> Coins</span>
+                        <span class="coins-text">{{ $t('coins') }}</span>
                     </div>
 
                     <div v-if="pkg.bonus > 0" class="bonus-text">
-                        +{{ pkg.bonus }} Bonus
+                        +{{ pkg.bonus }} {{ $t('bonus') }}
                     </div>
                 </div>
 
@@ -53,15 +53,21 @@
 
         <!-- Payment Method Section -->
         <div class="payment-section">
-            <h2 class="section-title">Payment Method</h2>
+            <h2 class="section-title">{{ $t('package.paymentMethod') }}</h2>
             <div class="payment-methods">
-                <button v-for="method in paymentMethods" :key="method.id" class="payment-method-btn" :class="{ 'selected': selectedPaymentMethod === method.id }" @click="selectPaymentMethod(method.id)">
-                    {{ method.name }}
+                <button 
+                    v-for="method in paymentMethods" 
+                    :key="method.id" 
+                    class="payment-method-btn" 
+                    :class="{ 'selected': selectedPaymentMethod === method.id }" 
+                    @click="selectPaymentMethod(method.id)"
+                >
+                    {{ $t(method.name) }}
                 </button>
             </div>
 
             <button class="pay-now-btn" @click="handlePayment">
-                Pay Now
+            {{ $t('payNow') }}
             </button>
         </div>
     </div>
@@ -91,8 +97,8 @@ interface Package {
 }
 
 const paymentMethods = ref<PaymentMethod[]>([
-    { id: 'paypal', name: 'PayPal', icon: '/images/paypal.png' },
-    { id: 'credit-card', name: 'Credit Card', icon: '/images/credit-card.png' },
+    { id: 'paypal', name: 'package.paypal', icon: '/images/paypal.png' },
+    { id: 'credit-card', name: 'package.creditCard', icon: '/images/credit-card.png' },
 ])
 
 const selectedPaymentMethod = ref('credit-card') // Select Credit Card by default
@@ -227,8 +233,8 @@ watchEffect(() => {
 }
 
 .packages-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.25rem;
     margin-bottom: 2rem;
 }
@@ -244,6 +250,7 @@ watchEffect(() => {
     flex-direction: column;
     text-align: center;
     justify-content: center;
+    flex: 1;
 }
 
 .package-card.selected {
@@ -360,10 +367,6 @@ watchEffect(() => {
 @media (max-width: 768px) {
     .top-up-container {
         padding: 1rem;
-    }
-
-    .packages-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
 
     .payment-methods {

@@ -17,6 +17,7 @@ const { t } = useI18n()
     <div class="overlay">
       <div class="movie-info">
         <h3 class="movie-title">{{ movie.title[locale] }}</h3>
+        <p class="movie-description">{{ movie.description[locale] }}</p>
         <span class="play-button">{{ t('watch_now') }}</span>
       </div>
     </div>
@@ -81,12 +82,26 @@ const { t } = useI18n()
 }
 
 .movie-info {
-  color: white;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 .movie-title {
-  font-size: 1rem;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.movie-description {
+  font-size: .75rem;
+  color: #e5e5e5;
   margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
 }
 
 .play-button {

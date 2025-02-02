@@ -17,25 +17,25 @@
     <div class="coins-info">
       <div class="coin-item">
       <Icon name="mdi-coin" class="coin-icon" />
-      <span>{{ userStore.user?.coins || 0 }} {{ t('navigation.coins') }}</span>
+      <span>{{ userStore.user?.coins || 0 }} {{ t('coins') }}</span>
       </div>
       <div class="coin-item">
-      <span>{{ userStore.user?.bonus || 0 }} {{ t('navigation.bonus') }}</span>
+      <span>{{ userStore.user?.bonus || 0 }} {{ t('bonus') }}</span>
       </div>
     </div>
     
-    <NuxtLink to="/shopping" class="top-up-button">
+    <NuxtLink :to="localePath('/shopping')" class="top-up-button">
       {{ t('navigation.topUp') }}
     </NuxtLink>
     
     <div class="menu-items">
       <button class="menu-item"  v-if="!authStore.isAuthenticated" @click="authStore.showLoginModal = true" >
       <Icon name="carbon:login" />
-      <span>{{ t('navigation.signIn') }}</span>
+      <span>{{ t('auth.signIn') }}</span>
       </button>
       <button v-else class="menu-item" @click="authStore.signOut()">
       <Icon name="carbon:logout" />
-      <span>{{ t('navigation.signOut') }}</span>
+      <span>{{ t('auth.signOut') }}</span>
       </button>
     </div>
     <ModalLogin v-if="authStore.showLoginModal" @close="authStore.showLoginModal = false" />
@@ -46,15 +46,10 @@
   
   <script setup lang="ts">
   const { t } = useI18n();
+  const localePath = useLocalePath();
 const userStore = useUserStore();
 const authStore = useAuthStore();
 
-// Fetch user data when authenticated
-// watch(() => authStore.isAuthenticated, async (isAuthenticated) => {
-//   if (isAuthenticated) {
-//     await userStore.fetchUserData();
-//   } 
-// }, { immediate: true });
   </script>
   
   <style scoped>
