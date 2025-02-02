@@ -106,6 +106,7 @@ export default defineNuxtConfig({
   //   typeCheck: true
   // },
   nitro: {
+    preset: 'netlify',
     moduleSideEffects: ['bcrypt'],
     experimental: {
       asyncContext: true
