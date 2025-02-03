@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  // compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   modules: [
     'nuxt-svgo',
@@ -56,21 +56,21 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'en',
-        // iso: 'en-US',
+        iso: 'en-US',
         name: 'English',
         native: 'English',
         file: 'en.json'
       },
       {
         code: 'tr',
-        // iso: 'tr-TR',
+        iso: 'tr-TR',
         name: 'Turkish',
         native: 'Türkçe',
         file: 'tr.json'
       },
       {
         code: 'ar',
-        // iso: 'ar-SA',
+        iso: 'ar-SA',
         native: 'العربية',
         name: 'Arabic',
         file: 'ar.json'
