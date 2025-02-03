@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   // compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+
   modules: [
     'nuxt-svgo',
     '@nuxt/image',
@@ -13,6 +14,7 @@ export default defineNuxtConfig({
     '@sidebase/nuxt-auth',
     '@nuxtjs/i18n'
   ],
+
   fonts: {
     families: [
       {
@@ -27,9 +29,11 @@ export default defineNuxtConfig({
       }
     ]
   },
+
   css: [
     '@/assets/css/main.css'
   ],
+
   image: {
     quality: 80,
     format: ['webp'],
@@ -43,6 +47,7 @@ export default defineNuxtConfig({
     },
     provider: 'ipx',
   },
+
   i18n: {
     lazy: true,
     langDir: './locales',
@@ -81,6 +86,7 @@ export default defineNuxtConfig({
     //   strictMessage: false
     // }
   },
+
   auth: {
     provider: {
       type: 'authjs',
@@ -88,10 +94,13 @@ export default defineNuxtConfig({
     globalAppMiddleware: {
       allow404WithoutAuth: true,
       isEnabled: false
-    }
+    },
+    originEnvKey: 'NUXT_AUTH_ORIGIN'
   },
+
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
+    authOrigin: '',
     public: {
       apiBaseUrl: '',
       siteUrl: '',
@@ -104,6 +113,7 @@ export default defineNuxtConfig({
     //   clientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET
     // }
   },
+
   // typescript: {
   //   strict: true,
   //   typeCheck: true
@@ -123,4 +133,6 @@ export default defineNuxtConfig({
       }
     }
   },
+
+  compatibilityDate: '2025-02-03',
 })
