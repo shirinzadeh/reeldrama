@@ -112,13 +112,4 @@ export default defineNuxtConfig({
       asyncContext: true
     }
   },
-  router: {
-    options: {
-      strict: true
-    }
-  },
-  experimental: {
-    payloadExtraction: false
-  },
-  pages: true
 })
