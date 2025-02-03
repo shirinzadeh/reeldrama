@@ -92,7 +92,7 @@ export default defineNuxtConfig({
     //   allow404WithoutAuth: true,
     //   isEnabled: false
     // },
-    baseURL: process.env.NUXT_PUBLIC_API_BASE_URL
+    baseURL: process.env.AUTH_ORIGIN
     // originEnvKey: 'NUXT_AUTH_ORIGIN'
   },
 
