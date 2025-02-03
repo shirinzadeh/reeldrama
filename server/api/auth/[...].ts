@@ -2,6 +2,7 @@ import { NuxtAuthHandler } from '#auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { User } from '~/server/models/user'
 import bcrypt from 'bcrypt'
+import { H3Error } from 'h3';
 
 const config = useRuntimeConfig()
 
@@ -16,23 +17,32 @@ export default NuxtAuthHandler({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials: any) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email and password are required')
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error('Email and password are required')
+          }
+  
+          const user = await User.findOne({ email: credentials.email })
+          if (!user) {
+            throw new Error('Email not found')
+          }
+  
+          const isValid = await bcrypt.compare(credentials.password, user.password)
+          if (!isValid) {
+            throw new Error('Invalid password')
+          }
+  
+          return {
+            id: user._id.toString(),
+            email: user.email,
+          }
         }
-
-        const user = await User.findOne({ email: credentials.email })
-        if (!user) {
-          throw new Error('Email not found')
-        }
-
-        const isValid = await bcrypt.compare(credentials.password, user.password)
-        if (!isValid) {
-          throw new Error('Invalid password')
-        }
-
-        return {
-          id: user._id.toString(),
-          email: user.email,
+        catch(error) {
+          if(error instanceof H3Error) {
+            console.error('Auth Error:', error.message)
+            return null  // Returning `null` ensures proper JSON response
+          }
+          
         }
       }
     })
@@ -62,6 +72,11 @@ export default NuxtAuthHandler({
         (session.user as any).bonus = token.bonus;
       }
       return session
+    }
+  },
+  events: {
+    async signOut({ token }) {
+      console.log('User signed out:', token)
     }
   }
 })

@@ -6,6 +6,13 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       const api = useApi()
       // Fetch languages from API
       const response = await api.get('/languages')
+
+      console.log('lang response', response)
+
+      if (!response || typeof response !== 'object') {
+        throw new Error('Invalid language API response')
+      }
+
       const languages = response as Language[]
       
       // Store languages in state for global access

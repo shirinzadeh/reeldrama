@@ -61,30 +61,27 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'en',
-        iso: 'en-US',
+        // iso: 'en-US',
         name: 'English',
         native: 'English',
         file: 'en.json'
       },
       {
         code: 'tr',
-        iso: 'tr-TR',
+        // iso: 'tr-TR',
         name: 'Turkish',
         native: 'Türkçe',
         file: 'tr.json'
       },
       {
         code: 'ar',
-        iso: 'ar-SA',
+        // iso: 'ar-SA',
         native: 'العربية',
         name: 'Arabic',
         file: 'ar.json'
       }
     ],
     vueI18n: './i18n.config.ts',
-    // precompile: {
-    //   strictMessage: false
-    // }
   },
 
   auth: {
