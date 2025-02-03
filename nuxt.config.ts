@@ -76,7 +76,10 @@ export default defineNuxtConfig({
         file: 'ar.json'
       }
     ],
-    vueI18n: './i18n.config.ts'
+    vueI18n: './i18n.config.ts',
+    // precompile: {
+    //   strictMessage: false
+    // }
   },
   auth: {
     provider: {
@@ -110,6 +113,14 @@ export default defineNuxtConfig({
     moduleSideEffects: ['bcrypt'],
     experimental: {
       asyncContext: true
+    },
+    routeRules: {
+      '/**': { 
+        cors: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      }
     }
   },
 })

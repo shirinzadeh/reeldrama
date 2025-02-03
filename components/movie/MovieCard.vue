@@ -3,10 +3,11 @@ const { locale } = useI18n()
 defineProps(['movie'])
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 </script>
 
 <template>
-  <NuxtLink :to="`/episodes/${movie._id}`" class="movie-card" :aria-label="`Watch ${movie.title[locale]}`">
+  <NuxtLink :to="localePath(`/episodes/${movie._id}`)" class="movie-card" :aria-label="`Watch ${movie.title[locale]}`">
     <NuxtImg
       :src="movie.thumbnail"
       :alt="`Thumbnail for ${movie.title[locale]}`"

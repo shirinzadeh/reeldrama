@@ -2,9 +2,9 @@
   <BaseDropdown position="left">
     <template #trigger>
       <div class="language-trigger">
-        <Icon name="mdi-earth" class="globe-icon" />
+        <Icon name="carbon:earth-filled" class="globe-icon" />
         <span>{{ currentLocaleNative }}</span>
-        <Icon name="mdi-chevron-down" class="trigger-icon" />
+        <Icon name="carbon:chevron-down" class="trigger-icon" />
       </div>
     </template>
 

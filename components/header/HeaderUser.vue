@@ -3,20 +3,20 @@
     <template #trigger>
     <div class="user-trigger">
       <div class="avatar">
-      <Icon name="mdi-account" size="1.5em" class="account-icon"/>
+      <Icon name="carbon:user-avatar" size="1.5em" class="account-icon"/>
       </div>
-    </div>
-    </template>
-    
-    <div class="user-menu">
-    <div class="user-info">
+        </div>
+        </template>
+        
+        <div class="user-menu">
+        <div class="user-info">
       <p class="user-label">{{ authStore.user?.email || t('navigation.guest') }}</p>
       <!-- <p class="user-id" v-if="authStore.user">UID {{ authStore.user.id }}</p> -->
-    </div>
-    
-    <div class="coins-info">
+        </div>
+        
+        <div class="coins-info">
       <div class="coin-item">
-      <Icon name="mdi-coin" class="coin-icon" />
+      <Icon name="carbon:currency" class="coin-icon" />
       <span>{{ userStore.user?.coins || 0 }} {{ t('coins') }}</span>
       </div>
       <div class="coin-item">
