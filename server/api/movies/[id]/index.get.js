@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
     // Fetch movie details without fetching episodes
     const movie = await Movie.findById(id).lean(); // Use `lean` to return a plain object.
     if (!movie) {
-      throw new Error('Movie not found');
+      setResponseStatus(event, 404); // ✅ Ensure correct status for not found
+      return { success: false, message: 'Movie not found' };
     }
 
     // Return only movie details
@@ -20,6 +21,7 @@ export default defineEventHandler(async (event) => {
     };
   } catch (error) {
     console.error('Error fetching movie details:', error);
+    setResponseStatus(event, 500); // ✅ Ensure proper HTTP status
     return { success: false, message: error.message };
   }
 });

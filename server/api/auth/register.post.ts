@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
       }
     }
   } catch (error) {
+    setResponseStatus(event, 500); // ✅ Ensure proper HTTP status
     return {
       success: false,
       error: 'An error occurred during registration'

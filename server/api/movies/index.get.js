@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
     return { success: true, data: movies }
   } catch (error) {
     console.error('Error fetching movies:', error)
+    setResponseStatus(event, 500); // ✅ Ensure proper HTTP status
     return { success: false, message: error.message }
   }
 })

@@ -7,8 +7,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       // Fetch languages from API
       const response = await api.get('/languages')
 
-      console.log('lang response', response)
-
       if (!response || typeof response !== 'object') {
         throw new Error('Invalid language API response')
       }

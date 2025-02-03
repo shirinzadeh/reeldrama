@@ -38,11 +38,7 @@ export default NuxtAuthHandler({
           }
         }
         catch(error) {
-          if(error instanceof H3Error) {
-            console.error('Auth Error:', error.message)
-            return null  // Returning `null` ensures proper JSON response
-          }
-          
+          return null
         }
       }
     })

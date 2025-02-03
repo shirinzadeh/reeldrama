@@ -16,11 +16,12 @@ export default defineEventHandler(async (event) => {
 
     const episodes = await Episode.find({ movieId }).sort('order');
     
-    if (!episodes) {
-      throw createError({
-        statusCode: 404,
-        message: 'Episodes not found'
-      });
+    if (!episodes || episodes.length === 0) { // ✅ Check for empty array
+      setResponseStatus(event, 404); // ✅ Proper HTTP status
+      return {
+        success: false,
+        message: 'No episodes found'
+      };
     }
 
     return episodes;

@@ -9,6 +9,7 @@ export default defineEventHandler(async () => {
     return { success: true, data: categories }
   } catch (error) {
     console.error('Error fetching categories:', error)
+    setResponseStatus(event, 500); // ✅ Ensure proper HTTP status
     return { success: false, message: error.message }
   }
 })

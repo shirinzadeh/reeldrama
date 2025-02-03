@@ -18,10 +18,8 @@ export default defineEventHandler(async (event) => {
         // Renamed 'package' to 'packageData' to avoid reserved word
         const packageData = await Package.findById(packageId)
         if (!packageData) {
-            throw createError({
-                statusCode: 404,
-                message: 'Package not found'
-            })
+            setResponseStatus(event, 404); // ✅ Proper HTTP status for not found
+            return { success: false, message: 'Package not found' };
         }
 
         // Create payment record
@@ -38,9 +36,7 @@ export default defineEventHandler(async (event) => {
             paymentId: payment._id,
         }
     } catch (error) {
-        throw createError({
-            statusCode: 500,
-            message: 'Payment initialization failed'
-        })
+        setResponseStatus(event, 500); // ✅ Ensure proper HTTP status
+        return { success: false, message: 'Payment initialization failed' };
     }
 })
