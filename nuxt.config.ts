@@ -91,16 +91,17 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
-    globalAppMiddleware: {
-      allow404WithoutAuth: true,
-      isEnabled: false
-    },
-    originEnvKey: 'NUXT_AUTH_ORIGIN'
+    // globalAppMiddleware: {
+    //   allow404WithoutAuth: true,
+    //   isEnabled: false
+    // },
+    baseURL: process.env.NUXT_PUBLIC_API_BASE_URL
+    // originEnvKey: 'NUXT_AUTH_ORIGIN'
   },
 
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
-    authOrigin: '',
+    // authOrigin: '',
     public: {
       apiBaseUrl: '',
       siteUrl: '',
