@@ -9,6 +9,11 @@ interface Package {
     isActive: boolean
 }
 
+interface ApiResponse { 
+    success: boolean; 
+    data: Package[] 
+}
+
 export const usePackageStore = defineStore('packageStore', () => {
     const packages = ref<Package[]>([])
     const selectedPackage = ref<Package | null>(null)
@@ -25,8 +30,10 @@ export const usePackageStore = defineStore('packageStore', () => {
         error.value = null
 
         const { data } = await api.asyncData('packages', '/packages')
-        if (data.value) {
-            packages.value = data.value as Package[]
+        const resData = data.value as ApiResponse;
+
+        if (resData.success) {
+            packages.value = resData.data as Package[]
             // Set default selected package to new user package if available
             selectedPackage.value = newUserPackage.value || packages.value[0] || null
         }
@@ -36,12 +43,7 @@ export const usePackageStore = defineStore('packageStore', () => {
         selectedPackage.value = packages.value.find(pkg => pkg._id === packageId) || null
     }
 
-    const regularPackages = computed(() =>
-    {
-        console.log('packages.value', packages.value)
-        return packages.value.filter(pkg => !pkg.isNewUserOnly)
-    }
-    )
+    const regularPackages = computed(() => packages.value.filter(pkg => !pkg.isNewUserOnly))
 
     return {
         packages,
