@@ -2,7 +2,7 @@ import { NuxtAuthHandler } from '#auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { User } from '~/server/models/user'
 import bcrypt from 'bcrypt'
-import { H3Error } from 'h3';
+import { safeDbOperation } from '~/server/utils/db-helper';
 
 declare module 'next-auth' {
   interface User {
@@ -33,21 +33,25 @@ export default NuxtAuthHandler({
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials: any) {
+      async authorize(credentials: { email: string, password: string }) {
         try {
           if (!credentials?.email || !credentials?.password) {
             throw new Error('Email and password are required')
           }
 
-          const user = await User.findOne({ email: credentials.email })
-            .select('email password coins bonus')
-            .lean()
-            .exec()
+          const user = await safeDbOperation(
+            () => User.findOne({ email: credentials.email })
+              .select('email password coins bonus')
+              .lean()
+              .exec(),
+            'Failed to fetch user'
+          )
 
           if (!user) {
             throw new Error('Email not found')
           }
 
+          // Verify password
           const isValid = await bcrypt.compare(credentials.password, user.password)
           if (!isValid) {
             throw new Error('Invalid password')
@@ -68,7 +72,8 @@ export default NuxtAuthHandler({
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60 // 30 days
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   callbacks: {
     async jwt({ token, user }) {

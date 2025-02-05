@@ -3,34 +3,19 @@
     <div class="login-container">
       <h2 class="login-title">{{ $t('auth.welcomeBack') }}</h2>
       <p class="login-subtitle">{{ $t('auth.enterCredentials') }}</p>
-      
+
       <form @submit.prevent="handleSubmit" class="login-form">
         <div class="form-group">
           <label class="form-label">{{ $t('auth.emailAddress') }}</label>
-          <input
-            v-model="email"
-            type="email"
-            required
-            class="form-input"
-          />
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">{{ $t('auth.password') }}</label>
-          <input
-            v-model="password"
-            type="password"
-            required
-            class="form-input"
-          />
+          <input v-model="email" type="email" required class="form-input" />
         </div>
 
-        <button
-          type="submit"
-          class="submit-button"
-          :class="{ 'button-loading': loading }"
-          :disabled="loading"
-        >
+        <div class="form-group">
+          <label class="form-label">{{ $t('auth.password') }}</label>
+          <input v-model="password" type="password" required class="form-input" />
+        </div>
+
+        <button type="submit" class="submit-button" :class="{ 'button-loading': loading }" :disabled="loading">
           <span v-if="!loading">{{ $t('auth.signIn') }}</span>
           <Icon v-else name="eos-icons:loading" />
         </button>
@@ -40,11 +25,7 @@
         <span>{{ $t('auth.noAccount') }}</span>
       </div>
 
-      <button 
-        type="button" 
-        class="signup-button"
-        @click="switchToRegister"
-      >
+      <button type="button" class="signup-button" @click="switchToRegister">
         {{ $t('auth.createAccount') }}
       </button>
     </div>
@@ -75,19 +56,13 @@ async function handleSubmit() {
   }
 
   loading.value = true
-  try {
-    const result = await authStore.handleLogin(email.value, password.value)
-    if (result.success) {
-      $toast.success(result.message)
-      emit('close')
-      authStore.closeAllModals()
-    } else {
-      $toast.error(result.error || 'Login failed')
-    }
-  } catch (error) {
-    $toast.error('An unexpected error occurred')
-  } finally {
-    loading.value = false
+  const result = await authStore.handleLogin(email.value, password.value)
+  if (result.success) {
+    $toast.success(result.message)
+    emit('close')
+    authStore.closeAllModals()
+  } else {
+    $toast.error(result.error || 'Login failed')
   }
 }
 

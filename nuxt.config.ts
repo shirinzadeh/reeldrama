@@ -50,7 +50,7 @@ export default defineNuxtConfig({
 
   i18n: {
     baseUrl: process.env.NODE_ENV === 'production' 
-      ? 'https://www.dramashortseries.com' 
+      ? process.env.NUXT_PUBLIC_SITE_URL 
       : 'http://localhost:3000',
     lazy: true,
     langDir: './locales',
@@ -91,14 +91,6 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
-    // globalAppMiddleware: {
-    //   allow404WithoutAuth: true,
-    //   isEnabled: false
-    // },
-    baseURL: process.env.NODE_ENV === 'production' 
-      ? 'https://www.dramashortseries.com' 
-      : 'http://localhost:3000',
-    // originEnvKey: 'NUXT_AUTH_ORIGIN'
   },
 
   runtimeConfig: {
@@ -117,10 +109,6 @@ export default defineNuxtConfig({
     // }
   },
 
-  // typescript: {
-  //   strict: true,
-  //   typeCheck: true
-  // }
   nitro: {
     serverAssets: [{
       baseName: 'database',
