@@ -33,7 +33,4 @@ const userSchema = new Schema<UserI>({
   timestamps: true 
 })
 
-// Add index for better query performance
-userSchema.index({ email: 1 }, { unique: true })
-
 export const User = model<UserI>('User', userSchema)
