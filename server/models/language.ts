@@ -1,28 +1,38 @@
-import mongoose from 'mongoose';
-import { Language } from '~/types/language';
+// server/models/Language.ts
+import { Schema, model } from 'mongoose'
+import type { Language } from '~/types/language'
 
-const languageSchema = new mongoose.Schema({
-    code: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    native: {
-        type: String,
-        required: true
-    },
-    isActive: {
-        type: Boolean,
-        default: true
-    },
-    isDefault: {
-        type: Boolean,
-        default: false
-    }
-});
+const languageSchema = new Schema<Language>({
+  code: {
+    type: String,
+    required: true,
+    unique: true,
+    index: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  native: {
+    type: String,
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+    index: true
+  },
+  isDefault: {
+    type: Boolean,
+    default: false,
+    index: true
+  }
+}, {
+  timestamps: true
+})
 
-export default mongoose.model<Language>('Language', languageSchema);
+// Add compound index for common queries
+languageSchema.index({ isActive: 1, isDefault: 1 })
+
+const Language = model<Language>('Language', languageSchema)
+export default Language

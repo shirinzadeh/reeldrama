@@ -1,4 +1,4 @@
-import connectToDatabase from '~/server/utils/db'
+import connectToDatabase from '~/server/utils/database'
 import Movie from '~/server/models/Movie'
 
 export default defineEventHandler(async (event) => {

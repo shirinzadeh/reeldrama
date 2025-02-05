@@ -1,4 +1,4 @@
-import connectToDatabase from '~/server/utils/db';
+import connectToDatabase from '~/server/utils/database';
 import Movie from '~/server/models/Movie';
 import Category from '~/server/models/Category';
 import Episode from '~/server/models/Episode';

@@ -1,16 +1,42 @@
+// stores/auth.ts
 import { defineStore } from 'pinia'
+import type { UserProfile } from '~/types/user'
+
+interface AuthState {
+  loading: boolean
+  showLoginModal: boolean
+  showRegisterModal: boolean
+}
+
+interface LoginResponse {
+  success: boolean
+  message?: string
+  error?: string
+}
+
+interface RegisterData {
+  email: string
+  password: string
+  [key: string]: any
+}
 
 export const useAuthStore = defineStore('auth', () => {
   const { status, data: session, signIn, signOut } = useAuth()
-  const loading = ref(false)
-  const showLoginModal = ref(false)
-  const showRegisterModal = ref(false)
+  const state = reactive<AuthState>({
+    loading: false,
+    showLoginModal: false,
+    showRegisterModal: false
+  })
 
   const isAuthenticated = computed(() => status.value === 'authenticated')
-  const user = computed(() => session.value?.user)
-  
-  async function handleLogin(email, password) {
-    loading.value = true
+  const user = computed(() => session.value?.user ?? null)
+
+  async function handleLogin(
+    email: string, 
+    password: string
+  ): Promise<LoginResponse> {
+    state.loading = true
+    
     try {
       const response = await signIn('credentials', {
         email,
@@ -25,9 +51,8 @@ export const useAuthStore = defineStore('auth', () => {
         }
       }
 
-      // Force session refresh after login
       await refreshNuxtData()
-      showLoginModal.value = false
+      state.showLoginModal = false
       
       return { 
         success: true,
@@ -36,20 +61,23 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       return { 
         success: false, 
-        error: error.message || 'An unexpected error occurred'
+        error: error instanceof Error ? error.message : 'An unexpected error occurred'
       }
     } finally {
-      loading.value = false
+      state.loading = false
     }
   }
 
-  const api = useApi()
-  async function handleRegister(userData) {
-    loading.value = true
+  async function handleRegister(userData: RegisterData): Promise<LoginResponse> {
+    state.loading = true
+    const api = useApi()
+    
     try {
-      const response = await api.post('/auth/register', {
+      const res = await api.post('/auth/register', {
         body: userData
       })
+
+      const response = res as LoginResponse
       
       if (response.success) {
         const loginResponse = await signIn('credentials', {
@@ -66,7 +94,7 @@ export const useAuthStore = defineStore('auth', () => {
           }
         }
 
-        showRegisterModal.value = false
+        state.showRegisterModal = false
         return {
           success: true,
           message: response.message
@@ -83,26 +111,24 @@ export const useAuthStore = defineStore('auth', () => {
         error: 'An unexpected error occurred'
       }
     } finally {
-      loading.value = false
+      state.loading = false
     }
   }
 
-  // Add function to close all modals
   function closeAllModals() {
-    showLoginModal.value = false
-    showRegisterModal.value = false
+    state.showLoginModal = false
+    state.showRegisterModal = false
   }
 
   return {
     user,
-    loading: readonly(loading),
+    loading: computed(() => state.loading),
     isAuthenticated,
-    showLoginModal,
+    showLoginModal: toRef(state, 'showLoginModal'),
+    showRegisterModal: toRef(state, 'showRegisterModal'),
     handleLogin,
-    signOut,
-    showRegisterModal,
     handleRegister,
+    signOut,
     closeAllModals
   }
 })
-

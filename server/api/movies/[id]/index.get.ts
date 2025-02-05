@@ -1,36 +1,49 @@
-// server/api/languages/index.get.ts
+// server/api/movies/[id]/index.get.ts
 import { H3Error } from 'h3'
-import Language from '~/server/models/language'
+import Movie, { IMovie } from '~/server/models/Movie'
 import { safeDbOperation } from '~/server/utils/db-helper'
-import type { Language as ILanguage } from '~/types/language'
 
 export default defineEventHandler(async (event) => {
   try {
-    const languages = await safeDbOperation(
-      () => Language.find({ isActive: true })
+    const id = getRouterParam(event, 'id')
+    if (!id) {
+      throw createError({
+        statusCode: 400,
+        message: 'Movie ID is required'
+      })
+    }
+
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      throw createError({
+        statusCode: 400,
+        message: 'Invalid movie ID format'
+      })
+    }
+
+    const movie = await safeDbOperation(
+      () => Movie.findById(id)
         .select('-__v')
-        .sort('name')
-        .lean<ILanguage[]>()
+        .lean<IMovie>()
         .exec(),
-      'Failed to fetch languages'
+      'Failed to fetch movie'
     )
 
-    if (!languages?.length) {
+    if (!movie) {
       return {
         statusCode: 404,
         success: false,
-        message: 'No active languages found'
+        message: 'Movie not found'
       }
     }
 
     return {
       statusCode: 200,
       success: true,
-      data: languages
+      data: movie
     }
 
   } catch (error) {
-    console.error('Error in languages route:', error)
+    console.error('Error in movie route:', error)
     
     if (error instanceof H3Error) {
       throw error

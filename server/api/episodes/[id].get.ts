@@ -1,20 +1,24 @@
 import { H3Error } from 'h3';
 import Episode from '~/server/models/Episode';
-import connectToDatabase from '~/server/utils/db';
+import { safeDbOperation } from '~/server/utils/db-helper'
 
 export default defineEventHandler(async (event) => {
   try {
-    await connectToDatabase();
-    
-    const movieId = event.context.params?.id;
+    const movieId = getRouterParam(event, 'id')
     if (!movieId) {
       throw createError({
         statusCode: 400,
         message: 'Movie ID is required'
-      });
+      })
     }
 
-    const episodes = await Episode.find({ movieId }).sort('order');
+    const episodes = await safeDbOperation(
+      () => Episode.find({ movieId })
+        .sort('order')
+        .lean()
+        .exec(),
+      'Failed to fetch episodes'
+    )
     
     if (!episodes || episodes.length === 0) { // ✅ Check for empty array
       setResponseStatus(event, 404); // ✅ Proper HTTP status

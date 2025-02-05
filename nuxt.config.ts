@@ -2,7 +2,10 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-02-04',
   devtools: { enabled: true },
-
+  app: {
+    // Enable page transitions
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
   modules: [
     'nuxt-svgo',
     '@nuxt/image',
@@ -117,11 +120,48 @@ export default defineNuxtConfig({
   //   typeCheck: true
   // }
   nitro: {
+    serverAssets: [{
+      baseName: 'database',
+      dir: './server/utils'
+    }],
+    // Add route rules for caching
     routeRules: {
+      // Cache static pages
+      '/**': { swr: true },
       '/api/auth/**': {
+        cache: false,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      },
+      // Cache static assets longer
+      '/images/**': { swr: true },
+      '/api/languages': {
         cache: {
-          maxAge: 0,
-          swr: false
+          maxAge: 60 * 60, // Cache for 1 hour since language data rarely changes
+          staleMaxAge: 60 * 60 * 24 // Allow stale content for up to a day
+        }
+      },
+      '/api/movies/**': {
+        cache: {
+          maxAge: 60 * 5, // Cache for 5 minutes
+          staleMaxAge: 60 * 60 // Allow stale content for up to an hour
+        }
+      },
+      '/api/episodes/**': {
+        cache: {
+          maxAge: 60 * 5 // Cache for 5 minutes
+        }
+      },
+      '/api/auth/me': {
+        cache: false // Never cache user data
+      },
+      '/api/packages': {
+        cache: {
+          maxAge: 60 * 15, // Cache for 15 minutes
+          staleMaxAge: 60 * 60 // Allow stale content for up to an hour
         }
       }
     }

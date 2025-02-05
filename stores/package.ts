@@ -1,57 +1,64 @@
-interface Package {
-    _id: string
-    id: number
-    coins: number
-    bonus: number
-    bonusPercentage: number
-    price: number
-    isNewUserOnly?: boolean
-    isActive: boolean
-}
+// stores/package.ts
+import { defineStore } from 'pinia'
+import type { Package, PackageResponse } from '~/types/package'
 
-interface ApiResponse { 
-    success: boolean; 
-    data: Package[] 
+interface PackageState {
+    packages: Package[]
+    selectedPackage: Package | null
+    loading: boolean
+    error: string | null
 }
 
 export const usePackageStore = defineStore('packageStore', () => {
-    const packages = ref<Package[]>([])
-    const selectedPackage = ref<Package | null>(null)
-    const loading = ref(false)
-    const error = ref<string | null>(null)
+    const state = reactive<PackageState>({
+        packages: [],
+        selectedPackage: null,
+        loading: false,
+        error: null
+    })
 
     const newUserPackage = computed(() =>
-        packages.value.find(pkg => pkg.isNewUserOnly)
+        state.packages.find(pkg => pkg.isNewUserOnly)
+    )
+
+    const regularPackages = computed(() =>
+        state.packages.filter(pkg => !pkg.isNewUserOnly)
     )
 
     async function fetchPackages() {
         const api = useApi()
-        loading.value = true
-        error.value = null
+        state.loading = true
+        state.error = null
 
-        const { data } = await api.asyncData('packages', '/packages')
-        const resData = data.value as ApiResponse;
+        const { data: resData, error } = await api.asyncData('packages', '/packages')
 
-        if (resData.success) {
-            packages.value = resData.data as Package[]
-            // Set default selected package to new user package if available
-            selectedPackage.value = newUserPackage.value || packages.value[0] || null
+        const data = resData as { value: PackageResponse }
+
+        if (data.value?.success) {
+            state.packages = data.value.data
+            // Set default selected package
+            state.selectedPackage = newUserPackage.value || state.packages[0] || null
+        } else {
+            state.error = error.value?.message || 'Failed to fetch packages'
         }
     }
 
     function setSelectedPackage(packageId: string) {
-        selectedPackage.value = packages.value.find(pkg => pkg._id === packageId) || null
+        state.selectedPackage = state.packages.find(pkg => pkg._id === packageId) || null
     }
 
-    const regularPackages = computed(() => packages.value.filter(pkg => !pkg.isNewUserOnly))
-
     return {
-        packages,
-        selectedPackage,
-        loading,
-        error,
+        // State
+        packages: computed(() => state.packages),
+        selectedPackage: computed(() => state.selectedPackage),
+        loading: computed(() => state.loading),
+        error: computed(() => state.error),
+
+        // Computed
         newUserPackage,
         regularPackages,
+
+        // Actions
         fetchPackages,
         setSelectedPackage
     }

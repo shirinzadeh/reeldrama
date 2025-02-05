@@ -1,19 +1,39 @@
+// server/models/User.ts
 import { Schema, model } from 'mongoose'
+import type { User as UserI } from '~/types/user'
 
-interface IUser {
-  email: string
-  password: string
-  createdAt: Date
-  updatedAt: Date
-  coins: number
-  bonus: number
-}
+const userSchema = new Schema<UserI>({
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    index: true,
+    validate: {
+      validator: (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+      message: 'Invalid email format'
+    }
+  },
+  password: { 
+    type: String, 
+    required: true,
+    minlength: [8, 'Password must be at least 8 characters long']
+  },
+  coins: { 
+    type: Number, 
+    default: 0,
+    index: true,
+    min: [0, 'Coins cannot be negative']
+  },
+  bonus: { 
+    type: Number, 
+    default: 0,
+    min: [0, 'Bonus cannot be negative']
+  }
+}, { 
+  timestamps: true 
+})
 
-const userSchema = new Schema<IUser>({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  coins: { type: Number, default: 0 },
-  bonus: { type: Number, default: 0 },
-}, { timestamps: true })
+// Add index for better query performance
+userSchema.index({ email: 1 }, { unique: true })
 
-export const User = model<IUser>('User', userSchema)
+export const User = model<UserI>('User', userSchema)

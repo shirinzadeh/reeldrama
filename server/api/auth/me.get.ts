@@ -1,40 +1,54 @@
+// server/api/auth/me.get.ts
 import { getServerSession } from '#auth'
 import { User } from '~/server/models/user'
+import { safeDbOperation } from '~/server/utils/db-helper'
+import type { UserProfile } from '~/types/user'
 
 export default defineEventHandler(async (event) => {
   try {
     const session = await getServerSession(event)
-    if (!session || !session.user || !session.user.email) {
-      setResponseStatus(event, 401); // ✅ Proper HTTP status for unauthorized
+    if (!session?.user?.email) {
       return {
+        statusCode: 401,
         success: false,
-        error: 'Unauthorized'
+        message: 'Unauthorized'
       }
     }
 
-    const user = await User.findOne({ email: session.user.email })
+    const user = await safeDbOperation(
+      () => User.findOne({ email: session.user.email })
+        .select('email coins bonus')
+        .lean()
+        .exec(),
+      'Failed to fetch user data'
+    )
+
     if (!user) {
-      setResponseStatus(event, 404); // ✅ Proper HTTP status for not found
       return {
+        statusCode: 404,
         success: false,
-        error: 'User not found'
+        message: 'User not found'
       }
     }
 
+    const userProfile: UserProfile = {
+      id: user._id.toString(),
+      email: user.email,
+      coins: user.coins,
+      bonus: user.bonus
+    }
+
     return {
+      statusCode: 200,
       success: true,
-      data: {
-        id: user._id.toString(),
-        email: user.email,
-        coins: user.coins,
-        bonus: user.bonus
-      }
+      data: userProfile
     }
+
   } catch (error) {
-    setResponseStatus(event, 500); // ✅ Ensure status is always set
-    return {
-      success: false,
-      error: 'Failed to fetch user data'
-    }
+    console.error('Error in me route:', error)
+    throw createError({
+      statusCode: 500,
+      message: error instanceof Error ? error.message : 'Internal server error'
+    })
   }
 })

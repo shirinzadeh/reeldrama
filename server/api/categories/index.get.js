@@ -1,4 +1,4 @@
-import connectToDatabase from '~/server/utils/db'
+import connectToDatabase from '~/server/utils/database'
 import Category from '~/server/models/Category'
 
 export default defineEventHandler(async () => {
