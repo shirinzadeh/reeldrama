@@ -115,20 +115,5 @@ export default defineNuxtConfig({
   // typescript: {
   //   strict: true,
   //   typeCheck: true
-  // },
-  nitro: {
-    preset: 'netlify',
-    moduleSideEffects: ['bcrypt'],
-    experimental: {
-      asyncContext: true
-    },
-    routeRules: {
-      '/**': { 
-        cors: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
-    }
-  },
+  // }
 })
