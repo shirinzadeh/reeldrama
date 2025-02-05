@@ -92,7 +92,7 @@ export default defineNuxtConfig({
     //   allow404WithoutAuth: true,
     //   isEnabled: false
     // },
-    baseURL: process.env.AUTH_ORIGIN
+    baseURL: process.env.AUTH_ORIGIN,
     // originEnvKey: 'NUXT_AUTH_ORIGIN'
   },
 
@@ -116,4 +116,14 @@ export default defineNuxtConfig({
   //   strict: true,
   //   typeCheck: true
   // }
+  nitro: {
+    routeRules: {
+      '/api/auth/**': {
+        cache: {
+          maxAge: 0,
+          swr: false
+        }
+      }
+    }
+  },
 })
