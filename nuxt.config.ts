@@ -2,10 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-02-04',
   devtools: { enabled: true },
-  app: {
-    // Enable page transitions
-    pageTransition: { name: 'page', mode: 'out-in' },
-  },
+
   modules: [
     'nuxt-svgo',
     '@nuxt/image',
@@ -52,6 +49,9 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    baseUrl: process.env.NODE_ENV === 'production' 
+      ? 'https://www.dramashortseries.com' 
+      : 'http://localhost:3000',
     lazy: true,
     langDir: './locales',
     strategy: 'prefix_except_default',
@@ -95,7 +95,9 @@ export default defineNuxtConfig({
     //   allow404WithoutAuth: true,
     //   isEnabled: false
     // },
-    baseURL: process.env.AUTH_ORIGIN,
+    baseURL: process.env.NODE_ENV === 'production' 
+      ? 'https://www.dramashortseries.com' 
+      : 'http://localhost:3000',
     // originEnvKey: 'NUXT_AUTH_ORIGIN'
   },
 
@@ -127,7 +129,14 @@ export default defineNuxtConfig({
     // Add route rules for caching
     routeRules: {
       // Cache static pages
-      '/**': { swr: true },
+      '/api/**': {
+        cors: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      },
       '/api/auth/**': {
         cache: false,
         headers: {
