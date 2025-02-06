@@ -6,12 +6,14 @@ const localePath = useLocalePath();
 
 const movieStore = useMovieStore();
 const episodeStore = useEpisodeStore();
+const historyStore = useHistoryStore();
 
 const route = useRoute();
-const movieId = route.params.id;
+const movieId = route.params.movieId;
+const episodeNumber = parseInt(route.params.number);
 
-const initialEpisodeIndex = parseInt(route.query.episode) || 0;
-const currentEpisodeIndex = ref(initialEpisodeIndex);
+// Set initial episode index based on the episode number from URL
+const currentEpisodeIndex = ref(episodeNumber - 1);
 
 // Fetch movie and episode details on movieId change
 watch(
@@ -37,10 +39,12 @@ const showPackagesModal = ref(false);
 const selectedLockedEpisodeIndex = ref(null);
 
 const playEpisode = (index) => {
-  // Always change the current episode index
-  currentEpisodeIndex.value = index;
-  
   const episode = episodes.value[index];
+  const episodeNumber = episode.number;
+  
+  // Navigate to the new URL format
+  navigateTo(localePath(`/episodes/${movieId}/episode-${episodeNumber}`))
+
   if (!episode.free) {
     selectedLockedEpisodeIndex.value = index;
     showPackagesModal.value = true;
@@ -56,12 +60,13 @@ const handlePackagePurchase = () => {
 const handleVideoEnded = () => {
   const nextEpisodeIndex = currentEpisodeIndex.value + 1;
   
-  // Check if there is a next episode
   if (nextEpisodeIndex < episodes.value.length) {
-    // Always move to next episode, but show modal if it's locked
-    currentEpisodeIndex.value = nextEpisodeIndex;
+    const nextEpisode = episodes.value[nextEpisodeIndex];
     
-    if (!episodes.value[nextEpisodeIndex].free) {
+    // Navigate to next episode with new URL format
+    navigateTo(localePath(`/episodes/${movieId}/episode-${nextEpisode.number}`))
+    
+    if (!nextEpisode.free) {
       selectedLockedEpisodeIndex.value = nextEpisodeIndex;
       showPackagesModal.value = true;
     }
@@ -91,6 +96,11 @@ const handleVideoError = () => {
   }
 };
 
+const handleVideoTimeUpdate = () => {
+  updateHistory();
+  preventLockedPlayback()
+};
+
 // Add preventPlayback method
 const videoRef = ref(null);
 const preventLockedPlayback = () => {
@@ -100,8 +110,32 @@ const preventLockedPlayback = () => {
   }
 };
 
+const updateHistory = () => {
+  if (videoRef.value && currentEpisode.value && movieDetail.value) {
+    const video = videoRef.value
+    const progress = (video.currentTime / video.duration) * 100
+    
+    if (progress % 5 === 0 || progress > 10) {
+      historyStore.addToHistory({
+        movie: {
+          id: movieDetail.value._id,  // Make sure this matches the schema
+          title: movieDetail.value.title,
+          thumbnail: movieDetail.value.thumbnail,
+          totalEpisodes: movieDetail.value.totalEpisodes
+        },
+        episode: {
+          id: currentEpisode.value._id,  // Make sure this matches the schema
+          number: currentEpisode.value.number
+        },
+        progress: Math.round(progress)
+      })
+    }
+  }
+};
+
 const isLoading = computed(() => episodeStore.loading);
 const error = computed(() => episodeStore.error);
+
 </script>
 
 <template>
@@ -132,7 +166,7 @@ const error = computed(() => episodeStore.error);
             class="video-player"
             :src="videoSource"
             @play="preventLockedPlayback"
-            @timeupdate="preventLockedPlayback"
+            @timeupdate="handleVideoTimeUpdate"
             @loadstart="preventLockedPlayback"
             @error="handleVideoError"
             @ended="handleVideoEnded"
@@ -183,7 +217,7 @@ const error = computed(() => episodeStore.error);
 
         <!-- Plot Section -->
         <div class="plot-section">
-          <h2 class="section-title">Plot of {{ movieDetail?.title[locale] }}</h2>
+          <h2 class="section-title">{{ t('movie.plot') }}:</h2>
           <p class="plot-text">{{ movieDetail?.description[locale] }}</p>
         </div>
 
@@ -217,18 +251,18 @@ const error = computed(() => episodeStore.error);
           <!-- Episode Grid -->
           <div class="episode-grid">
             <button 
-              v-for="(episode, index) in episodeStore.currentEpisode" 
-              :key="index" 
+              v-for="episode in episodeStore.currentEpisode" 
+              :key="episode._id" 
               :class="[
                 'episode-number', 
                 { 
-                  active: index === currentEpisodeIndex,
+                  active: episode.number === episodeNumber,
                   locked: !episode.free 
                 }
               ]" 
-              @click="playEpisode(index)"
+              @click="playEpisode(episode.number - 1)"
             >
-              <span>{{ index + 1 }}</span>
+              <span>{{ episode.number }}</span>
               <Icon v-if="!episode.free" name="ph:lock-simple-fill" class="lock-icon" />
             </button>
           </div>
@@ -249,7 +283,6 @@ const error = computed(() => episodeStore.error);
     </BaseModal>
   </div>
 </template>
-
 
 <style scoped>
 .movie-page {

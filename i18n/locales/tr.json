@@ -6,6 +6,9 @@
   "bonus": "Bonus",
   "episode": "Bölüm",
   "home": "Ana Sayfa",
+  "history": "Geçmiş",
+  "continue_watching": "İzlemeye Devam Et",
+  "no_watch_history": "Henüz hiç video izlemediniz",
   "navigation": {
     "genre": "Türler",
     "fandom": "Hayran",
@@ -15,7 +18,8 @@
     "topUp": "Yükleme"
   },
   "movie": {
-    "youMightLike": "Beğenebilirsiniz"
+    "youMightLike": "Beğenebilirsiniz",
+    "plot": "Konu"
   },
   "episodes": {
     "badge": "PREMIUM",

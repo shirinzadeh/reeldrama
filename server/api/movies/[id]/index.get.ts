@@ -1,6 +1,7 @@
 // server/api/movies/[id]/index.get.ts
 import { H3Error } from 'h3'
-import Movie, { IMovie } from '~/server/models/Movie'
+import Movie from '~/server/models/Movie'
+import type { Movie as IMovie } from '~/types/movie'
 import { safeDbOperation } from '~/server/utils/db-helper'
 
 export default defineEventHandler(async (event) => {

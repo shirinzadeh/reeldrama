@@ -1,24 +1,16 @@
 <template>
   <BaseDropdown position="left">
     <template #trigger>
-      <div class="language-trigger">
-        <Icon name="carbon:earth-filled" class="globe-icon" />
-        <span>{{ currentLocaleNative }}</span>
-        <Icon name="carbon:chevron-down" class="trigger-icon" />
-      </div>
+      <Icon name="carbon:earth-filled" class="globe-icon" />
+      <span>{{ currentLocaleNative }}</span>
+      <Icon name="carbon:chevron-down" class="trigger-icon" />
     </template>
 
     <div class="language-menu">
-      <NuxtLink
-        v-for="locale in availableLocales"
-        :to="switchLocalePath(locale.code)"
-        :key="locale.code"
-        class="language-item"
-        :class="{ active: locale.code === currentLocale }"
-      >
-      <span class="language-native">{{ locale.native }}</span>
+      <NuxtLink v-for="locale in availableLocales" :to="switchLocalePath(locale.code)" :key="locale.code" class="language-item" :class="{ active: locale.code === currentLocale }">
+        <span class="language-native">{{ locale.native }}</span>
         <span class="language-name">{{ locale.name }}</span>
-    </NuxtLink>
+      </NuxtLink>
     </div>
   </BaseDropdown>
 </template>
@@ -39,20 +31,8 @@ const currentLocaleNative = computed(() => {
 </script>
 
 <style scoped>
-.language-trigger {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  transition: background 0.2s;
-}
-
-.language-trigger:hover {
-  background: var(--dark-surface-soft);
-}
-
-.globe-icon, .trigger-icon {
+.globe-icon,
+.trigger-icon {
   font-size: 1.2rem;
   color: var(--text-secondary);
 }
@@ -88,7 +68,8 @@ const currentLocaleNative = computed(() => {
   color: var(--text-primary);
 }
 
-.language-item:hover, .language-item.active {
+.language-item:hover,
+.language-item.active {
   background: var(--dark-surface-soft);
 }
 </style>

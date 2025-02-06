@@ -6,6 +6,9 @@
   "bonus": "Bonus",
   "episode": "Episode",
   "home": "Home",
+  "history": "History",
+  "continue_watching": "Continue Watching",
+  "no_watch_history": "You haven't watched any videos yet",
   "navigation": {
     "genre": "Genre",
     "fandom": "Fandom",
@@ -15,7 +18,8 @@
     "topUp": "Top Up"
   },
   "movie": {
-    "youMightLike": "You Might Like"
+    "youMightLike": "You Might Like",
+    "plot": "Plot"
   },
   "episodes": {
     "badge": "PREMIUM",

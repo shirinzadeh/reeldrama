@@ -463,7 +463,7 @@ export default defineEventHandler(async (event) => {
         },
         description: {
           en: "Bound by supernatural forces, she discovers she is the mate of an alpha wolf shifter with a tragic past. Though he leads with unwavering authority, a haunted memory continues to torment him. She tries to break through his walls, offering understanding and acceptance where he least expects it. As rival packs threaten their safety, they face the ultimate test of loyalty and courage. In the end, their bond, tested by fear and adversity, becomes an unbreakable beacon of hope for all who roam under the moonlit skies.",
-          tr: "Doğaüstü güçlerle bağlı olarak, genç kadın, trajik bir geçmişi olan bir alfa kurt değişimcisinin eşi olduğunu keşfeder. Her ne kadar sarsılmaz bir otoriteyle liderlik etse de, onu rahatsız eden bir hatıra devamlı olarak onu zorlar. O, duvarlarını aşmaya çalışır, anlayış ve kabul sunarak, en beklemediği yerden. Rakip sürüler, güvenliklerini tehdit ederken, sadakat ve cesaretin nihai sınavıyla karşılaşırlar. Sonunda, korku ve zorluklarla test edilen bağları, ay ışığı altında dolaşan herkese kırılmaz bir umut ışığı olur.",
+          tr: "Doğaüstü güçlerle bağlı olarak, genç kadın, trajik bir geçmişi olan bir alfa kurt değişimcisinin eşi olduğunu keşfeder. Her ne kadar sarsılmaz bir otoriteyle liderlik etse de, onu rahatsız eden bir hatıra devamlı olarak onu zorlar. O, duvarlarını aşmaya çalışır, anlayış ve kabul sunarak, en beklemediği yerden. Rakip sürüler, zayıflıklarını sömürmek için gizlice beklerken, korudukları değerleri korumak için bir araya gelmeleri gerekir. Birlik ve tutkuyla, nihayetinde gerçek aşka giden yolun, genellikle çatışma ve adanmışlıkla şekillendiğinde en parlak şekilde yandığını öğrenirler.",
           ar: "مربوطين بالقوى الخارقة للطبيعة، تكتشف أنها رفيقة لألفا مستذئب ذو ماضٍ مأساوي. على الرغم من أنه يقود بسلطة ثابتة، إلا أن ذاكرة تطارده تواصل معذبته. تحاول اختراق جدرانه، مقدمة الفهم والقبول في المكان الذي لا يتوقعه. مع تهديدات الحزم المتنافسة لسلامتهم، يواجهون اختبار الولاء والشجاعة النهائي. في النهاية، يصبح رابطهم، الذي تم اختباره بالخوف والصعوبات، منارة لا تنكسر للأمل لجميع من يتجولون تحت السماء المضاءة بالقمر."
         },
         tags: ["Romance", "Drama"],
@@ -604,6 +604,7 @@ export default defineEventHandler(async (event) => {
             ar: `الحلقة ${i}`
           },
           order: i,
+          number: i, 
           free: i <= freeEpisodes,
           videoUrl: `https://usc1.contabostorage.com/3225fed53fdc4eaca005a8a98b789240:movies/${category}/${movieSlug}/${i}.mp4`
         });
@@ -613,22 +614,23 @@ export default defineEventHandler(async (event) => {
 
 
     for (const movieData of sampleMovies) {
-      const { totalEpisodes, freeEpisodes, ...movieDetails } = movieData;
+      // Don't destructure totalEpisodes and freeEpisodes anymore
+      // const { totalEpisodes, freeEpisodes, ...movieDetails } = movieData;
 
-      // Create or update the movie with the selected language title
+      // Create or update the movie with ALL data including totalEpisodes
       const movie = await Movie.findOneAndUpdate(
-        { 'title.en': movieData.title.en }, // Use English title as unique identifier
-        { ...movieDetails},
+        { 'title.en': movieData.title.en },
+        { ...movieData }, // Pass the entire movieData object
         { upsert: true, new: true }
       );
-      console.log(`Upserted movie: ${movie.title}`);
+      console.log(`Upserted movie: ${movie.title.en} with ${movie.totalEpisodes} episodes (${movie.freeEpisodes} free)`);
 
-      // Generate and create episodes for the movie
+      // Generate and create episodes
       const episodes = generateEpisodes(movie._id, {
         title: movie.title,
         category: movie.category,
-        totalEpisodes,
-        freeEpisodes
+        totalEpisodes: movie.totalEpisodes,
+        freeEpisodes: movie.freeEpisodes
       });
 
       // Delete existing episodes for this movie
@@ -636,7 +638,7 @@ export default defineEventHandler(async (event) => {
 
       // Create new episodes
       await Episode.insertMany(episodes);
-      console.log(`Created ${episodes.length} episodes for movie: ${movie.title} (${freeEpisodes} free episodes)`);
+      console.log(`Created ${episodes.length} episodes for movie: ${movie.title} free episodes)`);
     }
 
     return {

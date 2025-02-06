@@ -22,9 +22,16 @@ const episodeSchema = new mongoose.Schema({
   videoUrl: {
     type: String,
     required: true
+  },
+  number: {
+    type: Number,
+    required: true
   }
 }, {
   timestamps: true
 });
+
+// Add index for better query performance
+episodeSchema.index({ movieId: 1, number: 1 });
 
 export default mongoose.models.Episode || mongoose.model('Episode', episodeSchema);

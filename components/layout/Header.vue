@@ -24,14 +24,7 @@ onMounted(() => {
     
     <div class="header-right">
       <div class="header-controls">
-        <!-- <button class="icon-button" aria-label="Search">
-          <Icon name="mdi-magnify" class="icon" />
-          <span class="icon-label">Search</span>
-        </button>
-        <button class="icon-button" aria-label="History">
-          <Icon name="mdi-history" class="icon" />
-          <span class="icon-label">History</span>
-        </button> -->
+        <HeaderHistory />
         <HeaderLanguage />
         <HeaderUser/>
       </div>

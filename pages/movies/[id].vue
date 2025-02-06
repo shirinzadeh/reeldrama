@@ -13,8 +13,8 @@ await movieStore.fetchMovies(movieId);
 await movieStore.fetchMovieDetail(movieId);
 await episodeStore.fetchEpisodeDetail(movieId);
 
-const playEpisode = async (_, index) => {
-  navigateTo(localePath(`/episodes/${movieDetail.value._id}?episode=${index}`));
+const playEpisode = async (_, i) => {
+  navigateTo(localePath(`/episodes/${movieDetail.value._id}/episode-${i+1}`));
 };
 </script>
 
@@ -51,7 +51,10 @@ const playEpisode = async (_, index) => {
       <div class="episodes-section">
         <h2 class="section-title">{{ t('episodes.list') }}</h2>
         <div class="episodes-grid">
-          <div v-for="(episode, index) in episodeStore.currentEpisode" :key="episode._id" class="episode-card" @click="playEpisode(episode, index)">
+          <div 
+            v-for="(episode, index) in episodeStore.currentEpisode" 
+            :key="episode._id" class="episode-card" 
+            @click="playEpisode(episode, index)">
             <!-- <div class="episode-thumbnail">
               <img :src="movieDetail?.banner" :alt="episode.title">
               <span class="play-overlay">▶</span>

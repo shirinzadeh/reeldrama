@@ -169,6 +169,12 @@ export default defineNuxtConfig({
           maxAge: 60 * 15, // Cache for 15 minutes
           staleMaxAge: 60 * 60 // Allow stale content for up to an hour
         }
+      },
+      '/api/history/**': {
+        cache: false,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate'
+        }
       }
     }
   },

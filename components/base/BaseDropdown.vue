@@ -97,6 +97,16 @@ onUnmounted(() => {
 
 .dropdown-trigger {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+}
+
+.dropdown-trigger:hover {
+  background: var(--dark-surface-soft);
 }
 
 .dropdown-content {

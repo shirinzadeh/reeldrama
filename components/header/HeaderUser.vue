@@ -62,7 +62,6 @@ const authStore = useAuthStore();
   .avatar {
     background-color: #fff;
     border-radius: 50%;
-    padding: 0.25rem;
     display: inline-flex;
   }
   
