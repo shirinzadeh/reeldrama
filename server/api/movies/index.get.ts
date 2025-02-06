@@ -6,31 +6,10 @@ import type { Movie as IMovie } from '~/types/movie'
 
 export default defineEventHandler(async (event) => {
   try {
-    // Get query parameters
-    const query = getQuery(event)
-    const page = Number(query.page) || 1
-    const limit = Number(query.limit) || 10
-    const category = query.category as string
-    const featured = query.featured === 'true'
-
-    // Build filter
-    const filter: any = {}
-    if (category) filter.category = category
-    if (featured) filter.isFeatured = true
-
-    // Get total count for pagination
-    const total = await safeDbOperation(
-      () => Movie.countDocuments(filter),
-      'Failed to count movies'
-    )
-
-    // Fetch movies with pagination
     const movies = await safeDbOperation(
-      () => Movie.find(filter)
+      () => Movie.find({})
         .select('-__v')
-        .sort('-releaseDate')
-        .skip((page - 1) * limit)
-        .limit(limit)
+        .sort('-releaseDate')  // Sort by release date, newest first
         .lean<IMovie[]>()
         .exec(),
       'Failed to fetch movies'
@@ -47,13 +26,7 @@ export default defineEventHandler(async (event) => {
     return {
       statusCode: 200,
       success: true,
-      data: movies,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
+      data: movies
     }
 
   } catch (error) {
