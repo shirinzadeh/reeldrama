@@ -1,26 +1,6 @@
 // server/models/Movie.ts
 import { Schema, model } from 'mongoose'
-
-interface TranslatedField {
-  en: string
-  tr?: string
-  ar?: string
-}
-
-export interface IMovie {
-  title: TranslatedField
-  description: TranslatedField
-  tags: string[]
-  category: string
-  thumbnail: string
-  banner: string
-  releaseDate: Date
-  isFeatured: boolean
-  totalEpisodes: number
-  freeEpisodes: number
-  createdAt: Date
-  updatedAt: Date
-}
+import type { Movie as IMovie } from '~/types/movie'
 
 const movieSchema = new Schema<IMovie>({
   title: {

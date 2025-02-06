@@ -28,10 +28,10 @@ const { locale: currentLocale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
 const availableLocales = computed(() => {
-  return locales.value.filter(i => i.code !== currentLocale.value)
+  return locales.value
+    .filter(i => i.code !== currentLocale.value && i.isActive) // Only show active languages
 })
-// Compute current language name
-// Get current language's name
+
 const currentLocaleNative = computed(() => {
   const current = locales.value.find(l => l.code === currentLocale.value)
   return current ? current.native : ''

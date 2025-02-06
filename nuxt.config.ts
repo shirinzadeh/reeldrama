@@ -67,21 +67,24 @@ export default defineNuxtConfig({
         // iso: 'en-US',
         name: 'English',
         native: 'English',
-        file: 'en.json'
+        file: 'en.json',
+        isActive: true
       },
       {
         code: 'tr',
         // iso: 'tr-TR',
         name: 'Turkish',
         native: 'Türkçe',
-        file: 'tr.json'
+        file: 'tr.json',
+        isActive: true
       },
       {
         code: 'ar',
         // iso: 'ar-SA',
         native: 'العربية',
         name: 'Arabic',
-        file: 'ar.json'
+        file: 'ar.json',
+        isActive: false  // Set to false to hide from dropdown
       }
     ],
     vueI18n: './i18n.config.ts',
@@ -139,6 +142,12 @@ export default defineNuxtConfig({
         cache: {
           maxAge: 60 * 60, // Cache for 1 hour since language data rarely changes
           staleMaxAge: 60 * 60 * 24 // Allow stale content for up to a day
+        }
+      },
+      '/api/movies': {
+        cache: {
+          maxAge: 60 * 5, // Cache for 5 minutes
+          staleMaxAge: 60 * 60 // Allow stale content for up to an hour
         }
       },
       '/api/movies/**': {
