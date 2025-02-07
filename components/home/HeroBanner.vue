@@ -68,7 +68,6 @@ const handleScroll = () => {
             class="banner-image"
             :style="{ transform: `translateY(${parallaxOffset}px)` }"
             format="webp"
-            loading="lazy"
             placeholder
           />
           <div class="movie-info">
