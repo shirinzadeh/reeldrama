@@ -1,47 +1,47 @@
 import { Schema, model } from 'mongoose'
 
 const historySchema = new Schema({
-  userId: { 
-    type: String,
-    required: false,
-    index: true
-  },
-  movie: {
-    _id: {  // Changed from 'id' to '_id' to match Mongoose conventions
-      type: Schema.Types.ObjectId,
-      ref: 'Movie',
-      required: true
+    userId: {
+        type: String,
+        required: false,
+        index: true
     },
-    title: {
-      en: String,
-      tr: String,
-      ar: String
+    movie: {
+        _id: {  // Changed from 'id' to '_id' to match Mongoose conventions
+            type: Schema.Types.ObjectId,
+            ref: 'Movie',
+            required: true
+        },
+        title: {
+            en: String,
+            tr: String,
+            ar: String
+        },
+        thumbnail: String,
+        totalEpisodes: Number
     },
-    thumbnail: String,
-    totalEpisodes: Number
-  },
-  episode: {
-    _id: {  // Changed from 'id' to '_id' to match Mongoose conventions
-      type: Schema.Types.ObjectId,
-      ref: 'Episode',
-      required: true
+    episode: {
+        _id: {  // Changed from 'id' to '_id' to match Mongoose conventions
+            type: Schema.Types.ObjectId,
+            ref: 'Episode',
+            required: true
+        },
+        number: Number
     },
-    number: Number
-  },
-  progress: {
-    type: Number,
-    default: 0
-  },
-  deviceId: {
-    type: String,
-    required: true
-  },
-  watchedAt: {
-    type: Date,
-    default: Date.now
-  }
+    progress: {
+        type: Number,
+        default: 0
+    },
+    deviceId: {
+        type: String,
+        required: true
+    },
+    watchedAt: {
+        type: Date,
+        default: Date.now
+    }
 }, {
-  timestamps: true
+    timestamps: true
 })
 
 // Compound index for efficient queries

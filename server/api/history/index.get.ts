@@ -1,29 +1,39 @@
+import { H3Error } from 'h3'
 import { getServerSession } from '#auth'
 import History from '~/server/models/History'
+import { safeDbOperation } from '~/server/utils/db-helper'
 
 export default defineEventHandler(async (event) => {
-  const session = await getServerSession(event)
-  const query = getQuery(event)
-  const deviceId = query.deviceId
+  try {
+    const session = await getServerSession(event)
+    const query = getQuery(event)
+    const deviceId = query.deviceId
 
-  let historyQuery = {}
-  
-  if (session?.user?.id) {
-    historyQuery = { userId: session.user.id }
-  } else if (deviceId) {
-    historyQuery = { deviceId }
-  } else {
+    const historyQuery = session?.user?.id 
+      ? { userId: session.user.id }
+      : { deviceId }
+
+    const history = await safeDbOperation(
+      () => History.find(historyQuery)
+        .sort({ watchedAt: -1 })
+        .limit(10)
+        .lean(),
+      'Failed to fetch watch history'
+    )
+
+    return history
+
+  } catch (error) {
+    console.error('Error in history route:', error)
+    
+    if (error instanceof H3Error) {
+      throw error
+    }
+
     throw createError({
-      statusCode: 400,
-      message: 'Device ID is required for unauthenticated users'
+      statusCode: 500,
+      message: error instanceof Error ? error.message : 'Internal server error',
+      stack: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : undefined) : undefined
     })
   }
-
-  // No need to populate since we store the needed data directly
-  const history = await History.find(historyQuery)
-    .sort({ watchedAt: -1 })
-    .limit(10)
-    .lean()
-
-  return history
 })
