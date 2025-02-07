@@ -233,7 +233,5 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: '//usc1.contabostorage.com' }
       ]
     },
-    // Add page transition
-    pageTransition: { name: 'page', mode: 'out-in' }
   }
 })

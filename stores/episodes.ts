@@ -1,41 +1,39 @@
 import { defineStore } from 'pinia';
 import type { Ref } from 'vue';
-import Episode from '~/server/models/Episode';
-
-interface State {
-  currentEpisode: any[] | null;
-  loading: boolean;
-  error: string | null;
-}
-
+import { H3Error } from 'h3'
 export const useEpisodeStore = defineStore('episodeStore', () => {
   // state
   const currentEpisode: Ref<any[] | null> = ref(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
+  const $reset = () => {
+    currentEpisode.value = []
+    loading.value = false
+    error.value = null
+  }
+
   // actions
   const fetchEpisodeDetail = async (movieId: string) => {
     if (!movieId) return;
-    
+
     loading.value = true;
     error.value = null;
-    
+
     try {
       const api = useApi();
       const response = await api.get(`/episodes/${movieId}`);
-      const data = response as { success: boolean; data: any[] };
+      const data = response as { success: boolean; data: [] };
       if (data.success) {
         currentEpisode.value = data.data
-      } else {
-        throw new Error('Failed to fetch episodes')
       }
-    } catch (err) {
-      console.error('Error fetching episodes:', err)
-      error.value = err instanceof Error ? err.message : 'Failed to fetch episodes'
-      currentEpisode.value = []
-    } finally {
-      loading.value = false
+    }
+    catch (error) {
+      console.error('Error fetching episodes:', error);
+  
+    }
+    finally {
+      loading.value = false;
     }
   };
 
@@ -53,5 +51,6 @@ export const useEpisodeStore = defineStore('episodeStore', () => {
     // actions
     fetchEpisodeDetail,
     clearEpisodes,
+    $reset
   };
 });
