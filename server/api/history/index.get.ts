@@ -1,7 +1,7 @@
 import { H3Error } from 'h3'
 import { getServerSession } from '#auth'
 import History from '~/server/models/History'
-import { safeDbOperation } from '~/server/utils/db-helper'
+import { safeCachedOperation } from '~/server/utils/db-helper'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,11 +13,15 @@ export default defineEventHandler(async (event) => {
       ? { userId: session.user.id }
       : { deviceId }
 
-    const history = await safeDbOperation(
+    const cacheKey = `history:${session?.user?.id || deviceId}`
+
+    const history = await safeCachedOperation(
       () => History.find(historyQuery)
         .sort({ watchedAt: -1 })
         .limit(10)
         .lean(),
+      cacheKey,
+      60, // Cache for 1 minute
       'Failed to fetch watch history'
     )
 

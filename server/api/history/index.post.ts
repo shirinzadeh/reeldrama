@@ -1,7 +1,6 @@
 import { getServerSession } from '#auth'
 import History from '~/server/models/History'
-import Movie from '~/server/models/Movie'
-import Episode from '~/server/models/Episode'
+import { safeDbOperation } from '~/server/utils/db-helper'
 
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
@@ -16,7 +15,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Transform the data to match schema
     const historyData = {
       movie: {
         _id: movie.id,
@@ -32,29 +30,33 @@ export default defineEventHandler(async (event) => {
       deviceId
     }
 
-    // Find existing history entry
-    const existingEntry = await History.findOne({
-      'movie._id': historyData.movie._id,
-      ...(session?.user?.id ? { userId: session.user.id } : { deviceId })
-    })
+    return await safeDbOperation(async () => {
+      // Use findOneAndUpdate with upsert for atomic operation
+      const history = await History.findOneAndUpdate(
+        {
+          'movie._id': historyData.movie._id,
+          ...(session?.user?.id ? { userId: session.user.id } : { deviceId })
+        },
+        {
+          $set: {
+            ...historyData,
+            watchedAt: new Date(),
+            ...(session?.user?.id && { userId: session.user.id })
+          }
+        },
+        {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true
+        }
+      )
 
-    if (existingEntry) {
-      // Update if progress is higher or episode changed
-      if (progress > existingEntry.progress || !existingEntry.episode || existingEntry.episode._id.toString() !== historyData.episode._id) {
-        existingEntry.progress = progress
-        existingEntry.episode = historyData.episode
-        await existingEntry.save()
-      }
-      return existingEntry
-    }
+      // Invalidate cache
+      const cache = useStorage('cache')
+      await cache.removeItem(`history:${session?.user?.id || deviceId}`)
 
-    // Create new history entry
-    const historyEntry = await History.create({
-      ...historyData,
-      ...(session?.user?.id && { userId: session.user.id })
-    })
-
-    return historyEntry
+      return history
+    }, 'Failed to update watch history')
   } catch (error) {
     console.error('Error saving history:', error)
     throw createError({
