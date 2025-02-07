@@ -23,14 +23,19 @@ export const useEpisodeStore = defineStore('episodeStore', () => {
     
     try {
       const api = useApi();
-      const episodes = await api.get(`/episodes/${movieId}`);
-      currentEpisode.value = episodes as (typeof Episode)[];
+      const response = await api.get(`/episodes/${movieId}`);
+      const data = response as { success: boolean; data: any[] };
+      if (data.success) {
+        currentEpisode.value = data.data
+      } else {
+        throw new Error('Failed to fetch episodes')
+      }
     } catch (err) {
-      console.error('Error fetching episode:', err);
-      error.value = err instanceof Error ? err.message : 'Failed to fetch episodes';
-      currentEpisode.value = null;
+      console.error('Error fetching episodes:', err)
+      error.value = err instanceof Error ? err.message : 'Failed to fetch episodes'
+      currentEpisode.value = []
     } finally {
-      loading.value = false;
+      loading.value = false
     }
   };
 
