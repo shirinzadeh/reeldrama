@@ -36,7 +36,7 @@ export default defineNuxtConfig({
 
   image: {
     quality: 80,
-    format: ['webp'],
+    format: ['webp', 'avif'],
     screens: {
       xs: 320,
       sm: 640,
@@ -46,6 +46,9 @@ export default defineNuxtConfig({
       xxl: 1536,
     },
     provider: 'ipx',
+    preload: true,
+    domains: ['usc1.contabostorage.com'],
+    densities: [1, 2]
   },
 
   i18n: {
@@ -137,7 +140,12 @@ export default defineNuxtConfig({
         }
       },
       // Cache static assets longer
-      '/images/**': { swr: true },
+      '/images/**': { 
+        swr: true,
+        headers: {
+          'cache-control': 'public, max-age=31536000, immutable'
+        }
+      },
       '/api/languages': {
         cache: {
           maxAge: 60 * 60, // Cache for 1 hour since language data rarely changes
@@ -175,7 +183,57 @@ export default defineNuxtConfig({
         headers: {
           'Cache-Control': 'no-store, no-cache, must-revalidate'
         }
+      },
+      // Static routes with long cache
+      '/': { 
+        swr: true,
+        cache: {
+          maxAge: 60 * 60 // 1 hour
+        }
+      },
+      '/movies': {
+        swr: true,
+        cache: {
+          maxAge: 60 * 30 // 30 minutes
+        }
+      },
+      '/episodes/**': { 
+        swr: true,
+        cache: {
+          maxAge: 60 * 15 // 15 minutes
+        }
+      },
+      '/_nuxt/**': {
+        headers: {
+          'cache-control': 'public, max-age=31536000, immutable'
+        }
       }
-    }
+    },
+    // Add compression
+    compressPublicAssets: true,
+    
+    // Add minification
+    minify: true
   },
+
+  // Add module optimization
+  experimental: {
+    payloadExtraction: true,
+    treeshakeClientOnly: true,
+    componentIslands: true
+  },
+
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'en'
+      },
+      link: [
+        { rel: 'dns-prefetch', href: '//usc1.contabostorage.com' },
+        { rel: 'preconnect', href: '//usc1.contabostorage.com' }
+      ]
+    },
+    // Add page transition
+    pageTransition: { name: 'page', mode: 'out-in' }
+  }
 })
