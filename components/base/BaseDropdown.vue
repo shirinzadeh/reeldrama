@@ -2,14 +2,15 @@
   <div 
     class="dropdown-container" 
     ref="dropdownRef"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
+    @mouseenter="!isMobile && handleMouseEnter()"
+    @mouseleave="!isMobile && handleMouseLeave()"
   >
     <div
       class="dropdown-trigger"
       :aria-expanded="isOpen"
       role="button"
       tabindex="0"
+      @click="handleClick"
     >
       <slot name="trigger" />
     </div>
@@ -26,7 +27,7 @@
         class="dropdown-content"
         :class="[position, { 'show-dropdown': isOpen }]"
         role="menu"
-        @mouseenter="clearCloseTimeout"
+        @mouseenter="!isMobile && clearCloseTimeout()"
       >
         <slot />
       </div>
@@ -43,14 +44,35 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   position: 'right',
-  hoverDelay: 100,    // Delay before opening
-  closeDelay: 150     // Delay before closing
+  hoverDelay: 100,
+  closeDelay: 150
 })
 
 const isOpen = ref(false)
+const isMobile = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
 let closeTimeout: NodeJS.Timeout | null = null
 let openTimeout: NodeJS.Timeout | null = null
+
+// Check if device is mobile
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768
+}
+
+// Handle click events (mainly for mobile)
+const handleClick = (event: Event) => {
+  if (isMobile.value) {
+    event.stopPropagation()
+    isOpen.value = !isOpen.value
+  }
+}
+
+// Close dropdown when clicking outside
+const handleOutsideClick = (event: Event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+    isOpen.value = false
+  }
+}
 
 const clearTimeouts = () => {
   if (closeTimeout) {
@@ -84,8 +106,16 @@ const clearCloseTimeout = () => {
   }
 }
 
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+  document.addEventListener('click', handleOutsideClick)
+})
+
 onUnmounted(() => {
   clearTimeouts()
+  window.removeEventListener('resize', checkMobile)
+  document.removeEventListener('click', handleOutsideClick)
 })
 </script>
 
