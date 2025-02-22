@@ -35,7 +35,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <BaseDropdown>
+  <BaseDropdown id="history-dropdown">
     <template #trigger>
         <Icon name="mdi-history" class="icon" />
         <span class="icon-label">{{ t('history') }}</span>

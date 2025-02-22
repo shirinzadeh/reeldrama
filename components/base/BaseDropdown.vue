@@ -15,6 +15,16 @@
       <slot name="trigger" />
     </div>
     <transition
+      enter-active-class="transition duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="isOpen && isMobile" class="dropdown-backdrop" @click="handleClick"></div>
+    </transition>
+    <transition
       :enter-active-class="isMobile ? 'mobile-enter-active' : 'transition duration-100 ease-out'"
       :enter-from-class="isMobile ? 'mobile-enter-from' : 'transform scale-95 opacity-0'"
       :enter-to-class="isMobile ? 'mobile-enter-to' : 'transform scale-100 opacity-100'"
@@ -44,13 +54,18 @@ interface Props {
   position?: 'left' | 'right';
   hoverDelay?: number;
   closeDelay?: number;
+  id?: string; // Add new prop for unique identification
 }
 
 const props = withDefaults(defineProps<Props>(), {
   position: 'right',
   hoverDelay: 100,
-  closeDelay: 150
+  closeDelay: 150,
+  id: () => `dropdown-${Math.random().toString(36).substr(2, 9)}` // Generate random ID if not provided
 })
+
+// Add new composable
+const { closeOtherDropdowns, clearActiveDropdown } = useDropdownState()
 
 const isOpen = ref(false)
 const isMobile = ref(false)
@@ -67,7 +82,15 @@ const checkMobile = () => {
 const handleClick = (event: Event) => {
   if (isMobile.value) {
     event.stopPropagation()
-    isOpen.value = !isOpen.value
+    const newState = !isOpen.value
+    
+    if (newState) {
+      closeOtherDropdowns(props.id)
+    } else {
+      clearActiveDropdown(props.id)
+    }
+    
+    isOpen.value = newState
   }
 }
 
@@ -113,13 +136,20 @@ const clearCloseTimeout = () => {
 onMounted(() => {
   checkMobile()
   window.addEventListener('resize', checkMobile)
-  document.addEventListener('click', handleOutsideClick)
+  window.addEventListener('click', handleOutsideClick)
+  window.addEventListener('close-other-dropdowns', ((e: CustomEvent) => {
+    if (e.detail.exceptId !== props.id) {
+      isOpen.value = false
+    }
+  }) as EventListener)
 })
 
 onUnmounted(() => {
   clearTimeouts()
   window.removeEventListener('resize', checkMobile)
-  document.removeEventListener('click', handleOutsideClick)
+  window.removeEventListener('click', handleOutsideClick)
+  window.removeEventListener('close-other-dropdowns', (() => {}) as EventListener)
+  document.body.classList.remove('dropdown-open')
 })
 
 // Prevent body scroll when dropdown is open on mobile
@@ -216,6 +246,7 @@ onUnmounted(() => {
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
   }
 
   .mobile-enter-active,
@@ -250,5 +281,18 @@ onUnmounted(() => {
     right: 0;
     left: 0;
   }
+}
+
+/* Add backdrop styles */
+.dropdown-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <BaseDropdown position="left">
+  <BaseDropdown id="language-dropdown" position="left">
     <template #trigger>
       <Icon name="carbon:earth-filled" class="globe-icon" />
       <span>{{ currentLocaleNative }}</span>

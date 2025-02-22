@@ -1,5 +1,5 @@
 <template>
-  <BaseDropdown :hoverDelay="50" :closeDelay="200">
+  <BaseDropdown id="user-dropdown" :hoverDelay="50" :closeDelay="200">
     <template #trigger>
     <div class="user-trigger">
       <div class="avatar">
