@@ -15,17 +15,21 @@
       <slot name="trigger" />
     </div>
     <transition
-      enter-active-class="transition duration-100 ease-out"
-      enter-from-class="transform scale-95 opacity-0"
-      enter-to-class="transform scale-100 opacity-100"
-      leave-active-class="transition duration-75 ease-in"
-      leave-from-class="transform scale-100 opacity-100"
-      leave-to-class="transform scale-95 opacity-0"
+      :enter-active-class="isMobile ? 'mobile-enter-active' : 'transition duration-100 ease-out'"
+      :enter-from-class="isMobile ? 'mobile-enter-from' : 'transform scale-95 opacity-0'"
+      :enter-to-class="isMobile ? 'mobile-enter-to' : 'transform scale-100 opacity-100'"
+      :leave-active-class="isMobile ? 'mobile-leave-active' : 'transition duration-75 ease-in'"
+      :leave-from-class="isMobile ? 'mobile-leave-from' : 'transform scale-100 opacity-100'"
+      :leave-to-class="isMobile ? 'mobile-leave-to' : 'transform scale-95 opacity-0'"
     >
       <div
         v-if="isOpen"
         class="dropdown-content"
-        :class="[position, { 'show-dropdown': isOpen }]"
+        :class="[
+          position,
+          { 'show-dropdown': isOpen },
+          { 'mobile-dropdown': isMobile }
+        ]"
         role="menu"
         @mouseenter="!isMobile && clearCloseTimeout()"
       >
@@ -117,6 +121,22 @@ onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
   document.removeEventListener('click', handleOutsideClick)
 })
+
+// Prevent body scroll when dropdown is open on mobile
+watch(isOpen, (newValue) => {
+  if (isMobile.value) {
+    if (newValue) {
+      document.body.classList.add('dropdown-open');
+    } else {
+      document.body.classList.remove('dropdown-open');
+    }
+  }
+});
+
+// Clean up body class on component unmount
+onUnmounted(() => {
+  document.body.classList.remove('dropdown-open');
+});
 </script>
 
 <style scoped>
@@ -177,5 +197,58 @@ onUnmounted(() => {
 
 :deep(.dropdown-item:hover) {
   background-color: var(--dark-surface-soft);
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+  .mobile-dropdown {
+    position: fixed;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0;
+    width: 100%;
+    min-width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .mobile-enter-active,
+  .mobile-leave-active {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .mobile-enter-from,
+  .mobile-leave-to {
+    transform: translateY(100%);
+  }
+
+  .mobile-enter-to,
+  .mobile-leave-from {
+    transform: translateY(0);
+  }
+
+  /* Prevent body scroll when dropdown is open */
+  :global(body.dropdown-open) {
+    overflow: hidden;
+  }
+}
+
+/* Override position styles for mobile */
+@media (max-width: 768px) {
+  .dropdown-content::before {
+    display: none;
+  }
+
+  .dropdown-content.right,
+  .dropdown-content.left {
+    right: 0;
+    left: 0;
+  }
 }
 </style>
