@@ -11,14 +11,23 @@ defineProps({
   title: {
     type: String,
     required: true
+  },
+  icon: {
+    type: String,
+    required: false,
+    default: ''
   }
+  
 })
 </script>
 
 <template>
     <section class="movie-section">
       <div class="container">
-          <h2 class="section-title">{{ title }}</h2>
+          <h2 class="section-title">
+            <span>{{ icon }}</span>
+            {{ title }}
+          </h2>
         <div class="movie-grid">
           <MovieCard 
             v-for="movie in movies" 

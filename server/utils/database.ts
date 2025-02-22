@@ -1,6 +1,5 @@
 // server/utils/database.ts
 import mongoose from 'mongoose'
-import { defineNitroPlugin } from 'nitropack/runtime/plugin'
 
 export default defineNitroPlugin(async () => {
   const config = useRuntimeConfig()

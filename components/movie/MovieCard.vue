@@ -1,9 +1,48 @@
 <script setup>
 const { locale } = useI18n()
-defineProps(['movie'])
+const props = defineProps({
+  movie: {
+    type: Object,
+    required: true,
+    validator: (movie) => {
+      return movie && 
+        movie._id && 
+        movie.title && 
+        movie.description && 
+        movie.thumbnail
+    }
+  }
+})
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+
+const myListStore = useMyListStore()
+
+const isInList = computed(() => {
+  return Array.isArray(myListStore.items) && 
+    myListStore.items.some(item => item._id === props.movie._id)
+})
+
+const isAnimating = ref(false)
+
+const toggleFavorite = async (e) => {
+  e.preventDefault() // Prevent link navigation
+  if (isAnimating.value) return // Prevent multiple clicks during animation
+  
+  isAnimating.value = true
+  
+  if (isInList.value) {
+    await myListStore.removeFromList(props.movie._id)
+  } else {
+    await myListStore.addToList(props.movie)
+  }
+  
+  // Reset animation state after a short delay
+  setTimeout(() => {
+    isAnimating.value = false
+  }, 300)
+}
 </script>
 
 <template>
@@ -19,7 +58,19 @@ const localePath = useLocalePath()
       <div class="movie-info">
         <h3 class="movie-title">{{ movie.title[locale] }}</h3>
         <p class="movie-description">{{ movie.description[locale] }}</p>
-        <span class="play-button">{{ t('watch_now') }}</span>
+        <div class="action-buttons">
+          <span class="play-button">{{ t('watch_now') }}</span>
+          <button 
+            @click="toggleFavorite" 
+            class="star-button" 
+            :class="{ 
+              'active': isInList, 
+              'animate': isAnimating 
+            }"
+          >
+            <Icon name="mdi-star" />
+          </button>
+        </div>
       </div>
     </div>
   </NuxtLink>
@@ -115,4 +166,50 @@ const localePath = useLocalePath()
   display: inline-block;
 }
 
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.star-button {
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  transform-origin: center;
+}
+
+.star-button.animate {
+  animation: starPop 0.3s ease-in-out;
+}
+
+@keyframes starPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.star-button.active {
+  color: hsl(51, 100%, 50%);
+  text-shadow: 0 0 8px hsla(51, 100%, 50%, 0.5);
+}
+
+.star-button:active {
+  transform: scale(0.9);
+}
 </style>

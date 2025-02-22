@@ -86,14 +86,11 @@ async function handleSubmit() {
   try {
     const result = await authStore.handleRegister(formData)
     if (result.success) {
-      $toast.success(result.message)
       emit('close')
       authStore.closeAllModals()
-    } else {
-      $toast.error(result.error)
-    }
+    } 
   } catch (error) {
-    $toast.error('An unexpected error occurred')
+    console.error(error)
   } finally {
     loading.value = false
   }

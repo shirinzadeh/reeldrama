@@ -9,6 +9,9 @@
   "history": "History",
   "continue_watching": "Continue Watching",
   "no_watch_history": "You haven't watched any videos yet",
+  "my_list": "My List",
+  "no_items_in_list": "No items in list",
+  "more": "More",
   "navigation": {
     "genre": "Genre",
     "fandom": "Fandom",

@@ -5,6 +5,7 @@ interface TranslatedField {
   }
   
   export interface Movie {
+    _id: string
     title: TranslatedField
     description: TranslatedField
     tags: string[]
