@@ -1,35 +1,76 @@
 <script setup>
-const {t} = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
 const isScrolled = ref(false)
+const isMobile = useState('isMobile', () => true) // Default to true for mobile-first
 
 onMounted(() => {
-  window.addEventListener('scroll', () => {
+  // Initial check
+  checkViewport()
+
+  // Handle scroll events
+  const handleScroll = () => {
     isScrolled.value = window.scrollY > 0
+  }
+
+  // Handle resize events
+  const handleResize = () => {
+    checkViewport()
+  }
+
+  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('resize', handleResize)
+
+  // Cleanup
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+    window.removeEventListener('resize', handleResize)
   })
 })
+
+function checkViewport() {
+  if (import.meta.client) {
+    isMobile.value = window.innerWidth <= 768
+  }
+}
 </script>
 
 <template>
-  <header class="header" :class="{ 'header-scrolled': isScrolled }">
-    <div class="header-left">
-      <NuxtLink :to="localePath('/')" class="logo">
-        <span class="logo-text">ReelShort</span>
-      </NuxtLink>
-      <nav class="nav-menu">
-        <NuxtLink :to="localePath('/')" class="nav-link" aria-label="Navigate to Home">{{ t('home') }}</NuxtLink>
-        <!-- <NuxtLink :to="localePath('/movie-genres')" class="nav-link" aria-label="Navigate to Genre">{{ t('navigation.genre') }}</NuxtLink> -->
-      </nav>
-    </div>
-    
-    <div class="header-right">
-      <div class="header-controls">
-        <HeaderHistory />
-        <HeaderLanguage />
-        <HeaderUser/>
+  <ClientOnly>
+    <header class="header" :class="{ 'header-scrolled': isScrolled }">
+      <div v-if="isMobile" class="mobile-layout">
+        <div class="mobile-left">
+          <HeaderLanguage />
+        </div>
+
+        <div class="mobile-right">
+          <HeaderHistory />
+          <HeaderUser />
+        </div>
       </div>
-    </div>
-  </header>
+
+      <div v-else class="desktop-layout">
+        <div class="header-left">
+          <NuxtLink :to="localePath('/')" class="logo">
+            <span class="logo-text">ReelShort</span>
+          </NuxtLink>
+          <nav class="nav-menu">
+            <NuxtLink :to="localePath('/')" class="nav-link" aria-label="Navigate to Home">
+              {{ t('home') }}
+            </NuxtLink>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <div class="header-controls">
+            <HeaderHistory />
+            <HeaderLanguage />
+            <HeaderUser />
+          </div>
+        </div>
+      </div>
+    </header>
+  </ClientOnly>
 </template>
 
 <style scoped>
@@ -39,10 +80,6 @@ onMounted(() => {
   left: 0;
   right: 0;
   z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
   background: transparent;
   color: #fff;
   transition: all 0.3s ease;
@@ -53,23 +90,48 @@ onMounted(() => {
 }
 
 .header:hover {
-  background-color: rgba(0,0,0,0.9);
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
-.header-left, .header-right {
+/* Mobile Layout - Should come first for mobile-first approach */
+.mobile-layout {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  width: 100%;
 }
 
+.mobile-left,
+.mobile-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.mobile-layout .logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Common Styles */
 .logo {
   text-decoration: none;
 }
 
 .logo-text {
   color: #e50914;
-  font-size: 1.8rem;
   font-weight: bold;
+}
+
+.desktop-layout .logo-text {
+  font-size: 1.8rem;
+}
+
+.mobile-layout .logo-text {
+  font-size: 1.5rem;
 }
 
 .nav-menu {
@@ -85,7 +147,8 @@ onMounted(() => {
   transition: opacity 0.2s;
 }
 
-.nav-link:hover, .nav-link.router-link-active {
+.nav-link:hover,
+.nav-link.router-link-active {
   opacity: 1;
 }
 
@@ -95,6 +158,7 @@ onMounted(() => {
   gap: 1.5rem;
 }
 
+/* Component Styles */
 .icon-button {
   background: none;
   border: none;
@@ -111,10 +175,6 @@ onMounted(() => {
   opacity: 1;
 }
 
-.icon {
-  font-size: 1.2rem;
-}
-
 .language-selector {
   display: flex;
   align-items: center;
@@ -126,10 +186,6 @@ onMounted(() => {
 
 .language-selector:hover {
   opacity: 1;
-}
-
-.globe-icon {
-  font-size: 1.2rem;
 }
 
 .user-profile {
@@ -147,21 +203,21 @@ onMounted(() => {
   color: #fff;
 }
 
-@media (max-width: 768px) {
-  .header {
-    padding: 0.8rem 1rem;
+/* Desktop Layout */
+@media (min-width: 769px) {
+  .desktop-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    width: 100%;
   }
 
-  .nav-menu {
-    display: none;
-  }
-
-  .icon-label, .language-selector {
-    display: none;
-  }
-
-  .header-controls {
-    gap: 1rem;
+  .header-left,
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
   }
 }
 </style>

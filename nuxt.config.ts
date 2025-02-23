@@ -225,6 +225,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      viewport: 'width=device-width, initial-scale=1',
       htmlAttrs: {
         lang: 'en'
       },

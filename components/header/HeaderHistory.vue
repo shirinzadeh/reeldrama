@@ -35,25 +35,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <BaseDropdown id="history-dropdown">
+  <BaseDropdown>
     <template #trigger>
-        <Icon name="mdi-history" class="icon" />
-        <span class="icon-label">{{ t('history') }}</span>
+      <Icon name="mdi-history" class="icon" />
+      <span class="icon-label">{{ t('history') }}</span>
     </template>
 
     <div class="history-wrapper">
       <div class="history-header">
         <div class="tabs">
-          <button 
-            @click="activeTab = 'history'"
-            :class="['tab-btn', { active: activeTab === 'history' }]"
-          >
+          <button @click="activeTab = 'history'" :class="['tab-btn', { active: activeTab === 'history' }]">
             {{ t('history') }}
           </button>
-          <button 
-            @click="activeTab = 'mylist'"
-            :class="['tab-btn', { active: activeTab === 'mylist' }]"
-          >
+          <button @click="activeTab = 'mylist'" :class="['tab-btn', { active: activeTab === 'mylist' }]">
             {{ t('my_list') }}
           </button>
         </div>
@@ -67,16 +61,12 @@ onMounted(() => {
           </div>
 
           <div v-else class="history-list">
-            <NuxtLink 
-              v-for="item in displayedItems" 
-              :key="item._id"
-              :to="localePath(`/episodes/${item.movie._id}/episode-${item.episode.number}`)"
-              class="history-item">
+            <NuxtLink v-for="item in displayedItems" :key="item._id" :to="localePath(`/episodes/${item.movie._id}/episode-${item.episode.number}`)" class="history-item">
               <img :src="item.movie.thumbnail" :alt="item.movie.title[locale]" class="history-thumb">
               <div class="history-info">
                 <h4>{{ item.movie.title[locale] }}</h4>
                 <div class="episode-info">
-                  <p>{{t('episode')}} {{ item.episode.number }}/{{ item.movie.totalEpisodes }}</p>
+                  <p>{{ t('episode') }} {{ item.episode.number }}/{{ item.movie.totalEpisodes }}</p>
                   <span class="progress-percent">{{ getSeriesProgress(item) }}%</span>
                 </div>
                 <div class="progress-bars">
@@ -89,43 +79,32 @@ onMounted(() => {
             </NuxtLink>
           </div>
         </div>
-        
+
         <div v-else>
           <div v-if="!myListStore.items.length" class="history-empty">
             <Icon name="mdi-playlist-play" size="24" class="mb-2" />
             <p>{{ t('no_items_in_list') }}</p>
           </div>
-          
+
           <div v-else class="history-list">
-            <NuxtLink 
-              v-for="movie in displayedItems" 
-              :key="movie._id"
-              :to="localePath(`/episodes/${movie._id}/episode-1`)"
-              class="history-item">
+            <NuxtLink v-for="movie in displayedItems" :key="movie._id" :to="localePath(`/episodes/${movie._id}/episode-1`)" class="history-item">
               <img :src="movie.thumbnail" :alt="movie.title[locale]" class="history-thumb">
               <div class="history-info">
                 <h4>{{ movie.title[locale] }}</h4>
                 <p class="description">{{ movie.description[locale] }}</p>
-                <button 
-                  @click.prevent="myListStore.removeFromList(movie._id)"
-                  class="remove-button"
-                >
+                <button @click.prevent="myListStore.removeFromList(movie._id)" class="remove-button">
                   <Icon name="mdi:close" />
                 </button>
               </div>
             </NuxtLink>
           </div>
         </div>
-        <NuxtLink 
-          v-if="shouldShowMore"
-          :to="localePath(`/dashboard/${activeTab}`)" 
-          class="more-link"
-        >
+        <NuxtLink v-if="shouldShowMore" :to="localePath(`/dashboard/${activeTab}`)" class="more-link">
           {{ t('more') }}
         </NuxtLink>
       </div>
     </div>
-    
+
   </BaseDropdown>
 </template>
 
@@ -257,8 +236,13 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {
@@ -277,6 +261,7 @@ onMounted(() => {
   cursor: pointer;
   padding: 0.25rem 0;
   position: relative;
+  font-size: 1rem;
 }
 
 .tab-btn.active {
@@ -297,9 +282,9 @@ onMounted(() => {
   color: var(--primary-900);
   font-size: 0.875rem;
   text-decoration: none;
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
 
 }
 
@@ -342,5 +327,15 @@ onMounted(() => {
 
 .remove-button:hover {
   background: rgba(229, 9, 20, 0.8);
+}
+
+@media (max-width: 768px) {
+  .icon-label {
+    display: none;
+  }
+
+  .icon {
+    font-size: 1.5rem;
+  }
 }
 </style>
